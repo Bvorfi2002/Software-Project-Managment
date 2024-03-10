@@ -1,0 +1,46 @@
+/* Google Font */
+@import url('https://fonts.googleapis.com/css2?family=YourChosenFont&display=swap');
+
+/* Root styles */
+:root {
+  --primary-color: #3498db;
+  --secondary-color: #2ecc71;
+}
+
+/* Body styles */
+body {
+  font-family: 'YourChosenFont', sans-serif;
+  background-color: #f4f4f4;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+/* Header styles */
+header {
+  background-color: var(--primary-color);
+  color: #fff;
+  padding: 15px 0;
+  text-align: center;
+}
+
+header .container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+header a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+/* Page styles */
+.pages {
+  padding: 20px;
+  margin: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
