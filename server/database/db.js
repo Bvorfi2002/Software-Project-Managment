@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
+const env = require('dotenv')
+
 let dbConnection = null;
-const url = "mongodb+srv://FilterManager:FilterSystem123@clusterepoka.itz3wpc.mongodb.net/?retryWrites=true&w=majority&appName=ClusterEpoka";
+const url = process.env.MONGO_URI;
 const connectionParams={
     useNewUrlParser: true,
     useUnifiedTopology: true,
