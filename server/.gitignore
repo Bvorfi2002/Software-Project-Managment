@@ -11,6 +11,11 @@
 # production
 /build
 
+# certificates
+localhost.crt
+localhost.csr
+localhost.key
+
 # misc
 .DS_Store
 .env.local
