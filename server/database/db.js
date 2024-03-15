@@ -1,13 +1,8 @@
 const mongoose = require('mongoose');
-const env = require('dotenv')
+require('dotenv').config();
 
 let dbConnection = null;
 const url = process.env.MONGO_URI;
-const connectionParams={
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    createIndexes: true,
-}
 
 module.exports = {
     connectToDb: (cb)=>{
@@ -24,7 +19,7 @@ module.exports = {
         cb();
     })
     .catch( (err) => {
-        console.error(`Error connecting to the database. n${err}`);
+        console.error(`Error connecting to the database: ${err}`);
     })
     },
     getDb: ()=>dbConnection
