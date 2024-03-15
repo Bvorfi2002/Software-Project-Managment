@@ -3,7 +3,6 @@ const app = express();
 const https = require('https');
 const fs = require('fs');
 const cors = require("cors");
-const test_route = require('./routes/test_route.js')
 const {connectToDb} = require('./database/db.js')
 
 const allowedOrigins = ['https://localhost:3000'];
@@ -21,9 +20,6 @@ app.use(cors({
     optionsSuccessStatus: 204,
 }));
 
-app.use('/test', test_route);
-
-
 const options = {
     key: fs.readFileSync('./localhost.key'),
     cert: fs.readFileSync('./localhost.crt'),
@@ -36,7 +32,6 @@ connectToDb((err) => {
     if (err) {
         console.log("Something went wrong with the server! Please try again later");
     } else {
-
         server.listen(port, () => {
             console.log(`Listening to HTTPS on port ${port}`);
         });
