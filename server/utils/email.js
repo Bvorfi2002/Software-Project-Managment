@@ -45,7 +45,7 @@ const generate_transporter = async ()=>{
 const sendOtp = async (emailAdress, temp_id) => {
 
     const otp = security.otpGenerator();
-    // security.otpStoring(temp_id, otp);
+    security.otpStoring(temp_id, otp);
 
     const mailOptions = {
         from: "no-reply",

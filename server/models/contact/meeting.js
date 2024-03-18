@@ -11,11 +11,10 @@ const meetingSchema = new mongoose.Schema({
         required: true
     },
     outcome: {
-    type: String,
-    enum: ['Completed', 'Agent Cancellation', 'Client Cancellation', 'Unsuccessful', 'Not Updated'],
-    default: 'Not Updated'
+        type: String,
+        enum: ['Successful', 'Agent Cancellation', 'Client Cancellation', 'Unsuccessful', 'Not Updated'],
+        default: 'Not Updated'
     },
-    isBuyerConverted: { type: Boolean, default: false }
 });
 
 const Meeting = mongoose.model('Meeting', meetingSchema);

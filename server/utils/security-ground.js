@@ -1,6 +1,6 @@
 const otp = require("otp-generator");
 const bcrypt = require("bcrypt");
-// const cache = require("./in-memory-cache.js");
+const cache = require("./in-memory-cache.js");
 const crypter = require("./encryption.js");
 const { passwordStrength } = require("check-password-strength");
 const regex = require("regex-username");
@@ -10,10 +10,10 @@ const otpGenerator = () => {
   return otp.generate(6);
 };
 
-// const otpStoring = (temp_id, otp) => {
-//   if (cache.set(temp_id, otp, 300)) console.log("otp set for 5 minutes");
-//   else console.log("Could not store the otp");
-// };
+const otpStoring = (temp_id, otp) => {
+  if (cache.set(temp_id, otp, 300)) console.log("otp set for 5 minutes");
+  else console.log("Could not store the otp");
+};
 
 const otpVerifier = (temp_id, otp) => {
   const retrievedOtp = cache.get(temp_id);
@@ -63,7 +63,7 @@ const verifyPasswordStrength = password => {
 
 module.exports = {
   otpGenerator: otpGenerator,
-//   otpStoring: otpStoring,
+  otpStoring: otpStoring,
   otpVerifier: otpVerifier,
   passwordHasher: passwordHasher,
   passwordVerifier: passwordVerifier,

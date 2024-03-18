@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 
 const debtSchema = new mongoose.Schema({
     client_id: { type: String },
-    amount: Schema.Types.Decimal128,
-    monthly_pay: Schema.Types.Decimal128,
+    amount: mongoose.Schema.Types.Decimal128,
+    monthly_pay: mongoose.Schema.Types.Decimal128,
     next_date: Date,
     sales_agent_id: { type: String },
     phone_agent_id: { type: String },

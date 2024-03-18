@@ -1,14 +1,15 @@
 const mongoose = require('mongoose');
 
 const saleSchema = new mongoose.Schema({
-    s_ag_id: String, //These 2 lines might be subject to changes 
-    p_ag_id: String, // I might use ref here for faster search but this is to be decided after performance check
-    date: Date,
-    amount: Schema.Types.Decimal128,
-    sale_type: String,
-    client_id: String,
-    ref_count: Number,
-    approved: Boolean
+    s_ag_id: {type: mongoose.Schema.Types.ObjectId, required: true, ref: 'SalesAgent'},
+    p_ag_id: {type: mongoose.Schema.Types.ObjectId, required: true, ref: 'PhoneAgent'},
+    date: {type: Date, required: true},
+    amount: {type: mongoose.Schema.Types.Decimal128, required: true},
+    sale_type: {type: String, required: true},
+    client_id: {type: mongoose.Schema.Types.ObjectId, required: true, ref: 'Client'},
+    ref_count: {type: Number, required: true},
+    approved: {type: Boolean, required: true},
+    contract_path: {type: String, required: true}
 });
 
 const sale_model = mongoose.model('Sale', saleSchema);

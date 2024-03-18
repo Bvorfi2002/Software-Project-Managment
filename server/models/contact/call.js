@@ -1,20 +1,35 @@
 const mongoose = require('mongoose');
 
-const callSchema = new mongoose.Schema({
-    //If date is not null, the call is added to "Reserved Calls"
-    scheduledDate: {type: Date, required: false},
-    phoneNumber: {type: String, required: true},
-    //If true the reference will be put into "Latest References" list 
-    contacted: { type: Boolean, default: false },
-    callOutcome: {
+const finishedCallSchema = new mongoose.Schema({
+    date: {type: Date, required: true},
+    outcome: {
         type: String,
-        enum: ['No Answer', 'Another Outcome', 'Excessive Argument', 'Successful Call', 'Not Updated'],
-        default: 'Not Updated'
+        enum: ['No Answer', 'Another Outcome', 'Excessive Argument', 'Successful Call'],
+        default: 'No Answer'
     },
-    //Is the number in the "Red List"? If false the number is in "Reserved Calls"
-    isRed: {type: Boolean, default: false}
-});
+    reference_id: {type: mongoose.Schema.Types.ObjectId, ref: 'Reference'},
+    p_ag_id: {type: mongoose.Schema.Types.ObjectId, ref: 'PhoneAgent'}
+})
 
-const Call = mongoose.model('Call', callSchema);
+const redListCallSchema = new mongoose.Schema({
+    date: {type: Date, required: true},
+    reference_id: {type: mongoose.Schema.Types.ObjectId, ref: 'Reference'},
+    p_ag_id: {type: mongoose.Schema.Types.ObjectId, ref: 'PhoneAgent'}
+})
 
-module.exports = Call;
+const reservedCallSchema = new mongoose.Schema({
+    reserved_date: {type: Date, required: true},
+    reserved_time: {type: Number, required: false},
+    reference_id: {type: mongoose.Schema.Types.ObjectId, ref: 'Reference'},
+    p_ag_id: {type: mongoose.Schema.Types.ObjectId, ref: 'PhoneAgent'}
+})
+
+const reservedCall = mongoose.model("ReservedCall", reservedCallSchema);
+const redListCall = mongoose.model("RedListCall", redListCallSchema);
+const finishedCall = mongoose.model("FinishedCall", finishedCallSchema);
+
+module.exports = {
+    finishedCall,
+    reservedCall,
+    redListCall
+};
