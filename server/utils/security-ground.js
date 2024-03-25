@@ -5,6 +5,8 @@ const crypter = require("./encryption.js");
 const { passwordStrength } = require("check-password-strength");
 const regex = require("regex-username");
 const validator = require('validator');
+const secureRandomPassword = require('secure-random-password');
+const randomUsernameGenerator = require('random-username-generator');
 
 const otpGenerator = () => {
   return otp.generate(6);
@@ -61,6 +63,17 @@ const verifyPasswordStrength = password => {
   return false;
 };
 
+const password_generator = ()=>{
+  return secureRandomPassword.randomPassword({
+    length: 8,
+    characters: secureRandomPassword.lower + secureRandomPassword.upper + secureRandomPassword.digits + secureRandomPassword.symbols,
+  });
+}
+
+const username_generator = ()=>{
+  return randomUsernameGenerator.generate();
+}
+
 module.exports = {
   otpGenerator: otpGenerator,
   otpStoring: otpStoring,
@@ -71,5 +84,7 @@ module.exports = {
   id_decrypter: id_decrypter,
   verifyEmail: verifyEmail,
   verifyPasswordStrength: verifyPasswordStrength,
-  verifyUserNameStrength: verifyUserNameStrength
+  verifyUserNameStrength: verifyUserNameStrength,
+  password_generator: password_generator,
+  username_generator: username_generator
 };

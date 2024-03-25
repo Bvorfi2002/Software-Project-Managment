@@ -85,5 +85,4 @@ const sendUserInfo = async (emailAdress, username, password) => {
 module.exports = {
     sendOtp,
     sendUserInfo,
-    test_mail
 }

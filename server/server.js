@@ -4,7 +4,6 @@ const https = require('https');
 const fs = require('fs');
 const cors = require("cors");
 const {connectToDb} = require('./database/db.js')
-
 const allowedOrigins = ['https://localhost:3000'];
 
 app.use(cors({
