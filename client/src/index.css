@@ -1,46 +1,197 @@
-/* Google Font */
-@import url('https://fonts.googleapis.com/css2?family=YourChosenFont&display=swap');
-
-/* Root styles */
-:root {
-  --primary-color: #3498db;
-  --secondary-color: #2ecc71;
-}
-
-/* Body styles */
+/*
+Eshima21
+*/
 body {
-  font-family: 'YourChosenFont', sans-serif;
-  background-color: #f4f4f4;
-  color: #333;
   margin: 0;
-  padding: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #7979f7;
+}
+*/
+.desktop {
+ 
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  /*width:  100vw; 1200px;*/
+  /*height:  100vh; 800px;*/
+ 
+  background-color: rgba(121, 121, 247, 0.777);
+ 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+ 
+ 
+ 
+  background: linear-gradient(135deg, #7979f7 0%); 
+  z-index: 1;
 }
 
-/* Header styles */
-header {
-  background-color: var(--primary-color);
-  color: #fff;
-  padding: 15px 0;
-  text-align: center;
+
+
+
+.inner-desktop {
+  width: 743.94px; 
+  height: 510.38px; 
+  position: absolute;
+  left: 228px; 
+  top: 145.43px; 
+  background-color:  #7979f7e4;
+  
+  border-radius: 20.82px; 
+  transform: rotate(0.03deg); 
+  z-index: 2;
+  overflow: visible;
+
 }
 
-header .container {
-  max-width: 1200px;
-  margin: 0 auto;
+.LoginForm{
+
+position: relative;
+z-index: 3;
+
 }
 
-header a {
-  color: #fff;
-  text-decoration: none;
-  font-weight: bold;
+.right-panel{
+  width: 499.67px; /* Adjust width as needed */
+  height: 510.385px; /* Adjust height as needed */
+  position: absolute;
+  left: 550.84px; /* Adjust X position as needed */
+  top: 145.43px; /* Adjust Y position as needed */
+  background-color: #ffffff; /* Set the color */
+  border-radius: 32px; /* Set corner radius */   
+  transform: rotate(0.03deg); /* Apply rotation */
+  z-index: 3;   
 }
 
-/* Page styles */
-.pages {
-  padding: 20px;
-  margin: 20px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #fff;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+.vector {
+  position: absolute;
+  width: 50px;
+  height: 200px;
+  border-radius: 50%;
+  opacity: 0.4; /* Set initial opacity to 20% */
+  z-index: 0; /* Ensure vectors are behind desktops */
 }
+
+.vector::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 1800" fill="%23FBFBFB"><path d="M1386.57 181.4c160.9 73.74 328.5 149.72 424.59 281.57 96.09 129.61 118.44 315.09 98.33 487.16-20.11 172.07-84.92 332.97-187.71 446.94-105.03 116.2-250.29 185.48-391.07 243.58-138.55 60.34-272.63 109.5-393.31 91.62-122.91-17.88-234.64-102.8-377.66-160.9-143.02-58.1-317.33-87.15-406.71-183.24-89.39-96.09-96.09-261.46 2.23-368.72 98.33-109.5 301.68-160.9 384.37-270.4 82.68-111.73 42.46-283.81 84.92-422.36C669.24 188.1 798.86 80.83 937.41 60.72c140.79-20.11 290.51 49.16 449.17 120.67Z"></path></svg>');
+  border-radius: 0; /* Remove the border-radius */
+  pointer-events: none; /* Allows clicks to pass through to elements behind */
+  opacity: 0.8; /* Set the opacity for the blob inside */
+  z-index: -1; /* Ensure blob is behind vectors */
+}
+
+.logo {
+  position: absolute;
+  left: 7.29px; /* Adjust X position */
+  top: 5.63px; /* Adjust Y position */
+  width: 120px; /* Set width */
+  height: 120px; /* Set height */
+}
+
+
+.logo2 {
+  position: absolute;
+  left: -130px; /* Adjust X position */
+  top: 255px; /* Adjust Y position */
+  width: 197px; /* Set width */
+  height: 212px; /* Set height */
+  z-index: 4; /* Set a higher z-index to bring it in front */
+}
+.slogan {
+
+  
+      position: absolute;
+      left: 50px;
+      top:    150px;
+      color: white;
+      font-style: Georgia;
+      font-size: 25px;
+  }
+
+  .createACC{
+      position: absolute;
+      font-style: Georgia;
+  top: 10px;
+  left: 180px;
+ 
+
+  color: #7979f7;
+  font-style: Georgia; 
+  font-size: 40px;
+  }
+
+  .form-container {
+      position: absolute; /* Apply absolute positioning */
+      top: 130px; /* Adjust as needed */
+      left: 150px; /* Adjust as needed */
+     
+     
+  }
+
+  .styled-form {
+      max-width: 300px;
+      margin: 0 auto;
+    }
+    
+    .styled-label {
+      position: relative;
+      display: block;
+      margin-bottom: 15px;
+      padding-left: 3em; /* Adjust left padding */
+      font-size: 1.0em;
+      color: #5f5dbd;
+      cursor: pointer;
+    }
+    /*
+    .styled-label::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 2em;
+      height: 2em;
+      background: #491276;
+    }*/
+    
+    .styled-input {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      background-color: #f5f5f5;
+      font-size: 1em;
+    }
+    
+    .styled-button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      background-color: #7979f7;
+
+     /* background-color: #007bff;*/
+      color: #fff;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    
+    .styled-button:hover {
+      background-color: #0056b3;
+    }
+    
