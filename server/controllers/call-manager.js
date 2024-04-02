@@ -4,36 +4,36 @@ const create_finished_call = async (call)=>{
     const finished_call = new FinishedCall({
         ...call
     });
-    await finished_call.save();
+    return await finished_call.save();
 }
 
 const create_finished_call_by_reserved_call = async (reserved_call_id)=>{
     const reserved_call = await ReservedCall.findById(reserved_call_id);
-    await reserved_call.toFinished();
+    return await reserved_call.toFinished();
 }
 
 const create_red_list_call = async (call)=>{
     const red_list_call = new RedListCall({
         ...call
     });
-    await red_list_call.save();
+    return await red_list_call.save();
 }
 
 const create_red_list_call_by_reserved = async (reserved_call_id)=>{
     const reserved_call = await ReservedCall.findById(reserved_call_id);
-    await reserved_call.toRedList();
+    return await reserved_call.toRedList();
 }   
 
 const create_reserved_call = async (call)=>{
     const reserved_call = new ReservedCall({
         ...call
     });
-    await reserved_call.save();
+    return await reserved_call.save();
 }
 
 const create_reserved_call_by_red_list = async (red_list_call_id)=>{
     const red_list_call = await RedListCall.findById(red_list_call_id);
-    await red_list_call.toReserved();
+    return await red_list_call.toReserved();
 }
 
 const get_reserved_calls = async (page_indexes)=>{

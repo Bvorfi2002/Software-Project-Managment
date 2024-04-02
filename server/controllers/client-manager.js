@@ -5,21 +5,21 @@ const Reference = require('../models/contact/reference.js')
 
 const create_client = async (ref_id, availability, sales_agent_id, phone_agent_id)=>{
     const reference = await Reference.findById(ref_id).exec();
-    await reference.toClient(availability, sales_agent_id, phone_agent_id);
+    return await reference.toClient(availability, sales_agent_id, phone_agent_id);
 }
 
 const delete_client = async (client_id)=>{
-    await Client.deleteOne({_id: client_id});
+    return await Client.deleteOne({_id: client_id});
 }
 
 const client_to_buyer = async (client_id)=>{
     const client = await Client.findById(client_id).exec();
-    await client.toBuyer();
+    return await client.toBuyer();
 }
 
 const client_to_refusal = async (client_id)=>{
     const client = await Client.findById(client_id).exec();
-    await client.toRefusal();
+    return await client.toRefusal();
 }
 
 const get_phone_agents_clients = async (agent_id)=>{

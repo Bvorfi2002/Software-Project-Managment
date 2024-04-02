@@ -9,7 +9,7 @@ const change_state = async (s_ag_id, date, slot, new_state)=>{
         return day;
     })
     sales_agent.set('schedule', new_schedule);
-    await sales_agent.save();
+    return await sales_agent.save();
 }
 
 const change_state_by_marketing_manager = async (s_ag_id, date, slot, new_state)=>{
@@ -21,7 +21,7 @@ const change_state_by_marketing_manager = async (s_ag_id, date, slot, new_state)
         return day;
     })
     sales_agent.set('schedule', new_schedule);
-    await sales_agent.save();
+    return await sales_agent.save();
     //here there will be the code for logging this in the admin panel
     //but it is still to be decided how the logging will be done
 }
