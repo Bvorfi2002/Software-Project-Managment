@@ -8,9 +8,10 @@ const PhoneAgent = require('../models/users/phone_agent.js');
 const SalesAgent = require('../models/users/sales_agent.js');
 const {v4: uuidv4} = require('uuid');
 const User = require('../models/users/user.js');
+const {ObjectId} = require('mongodb');
 const emailer = require('../utils/email.js');
 
-const generate_user = (name, surname, gmail, phone, role)=>{
+const generate_user = async (name, surname, gmail, phone, role)=>{
     const password = security_ground.password_generator();
     const username = security_ground.username_generator();
     let new_user = null;
@@ -36,8 +37,13 @@ const generate_user = (name, surname, gmail, phone, role)=>{
         default:
             break;
     }
-    // emailer.sendUserInfo(gmail, username, password);
-    new_user.save();
+    try{
+        const result = await new_user.save();
+        // await emailer.sendUserInfo(gmail, username, password);
+        return result
+    }catch(error){
+        return error.message;
+    }
 }
 
 const retrieve_user_by_username = async (username)=>{
@@ -72,6 +78,34 @@ const second_degree_auth = async (user_id, otp)=>{
     return security_ground.otpVerifier(user_id, otp);
 }
 
+const update_password = async (user_id, old_password, new_password) => {
+    const user = await User.findById(user_id).exec();
+    if(security_ground.passwordVerifier(user.password, old_password)){
+        if(security_ground.verifyPasswordStrength(new_password)){
+            await user.updateOne({ password: new_password });
+            return { result: 1, message: "New password set successfully" };
+        }else{
+            return { result: 3, message: "New password is not strong enough!" }
+        }
+    }else {
+        return {result: 2, message: "Current password was entered incorrectly"};
+    }
+}
+
+const update_username = async (user_id, new_username)=>{
+    const user_that_may_exist = await User.findOne({ username: new_username });
+    if(user_that_may_exist){
+        return { result:2, message: "A user exists with this username!" }
+    }else{
+        if(security_ground.verifyUserNameStrength(new_username)){
+            await User.findOneAndUpdate({_id: user_id}, {username: new_username});
+            return { result: 1, message: "Username updated successfully" };
+        }else{
+            return { result: 3, message: "The username entered is not strong enough!" }
+        }
+    }
+}
+
 const edit_user = (user_id, new_info)=>{
     const response = {result: true, message: "Edited successfully!"};
     User.findOneAndUpdate({_id: user_id}, {...new_info}, (err)=>{
@@ -95,5 +129,7 @@ module.exports = {
     serve_full_info_by_id,
     serve_user_info_by_id,
     delete_user,
-    edit_user
+    edit_user,
+    update_password,
+    update_username
 }

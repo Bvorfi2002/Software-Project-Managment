@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "nodemon server.js",
     "dev": "nodemon server.js"
   },
@@ -23,6 +23,7 @@
     "googleapis": "^134.0.0",
     "https": "^1.0.0",
     "jsonwebtoken": "^9.0.2",
+    "mockingoose": "^2.16.2",
     "mongoose": "^8.2.2",
     "node-cache": "^5.1.2",
     "nodemailer": "^6.9.12",
@@ -34,5 +35,8 @@
     "secure-random-password": "^0.2.3",
     "uuid": "^9.0.1",
     "validator": "^13.11.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
   }
 }

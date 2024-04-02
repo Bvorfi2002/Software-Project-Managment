@@ -12,7 +12,7 @@ const generate_debt = async (amount, monthly_pay, client_id, s_ag_id, p_ag_id, n
         phone_agent_id: p_ag_id,
         nr_months: nr_months
     }) 
-    await new_debt.save();
+    return await new_debt.save();
 }
 
 const generate_daily_debt_collection_tasks = async ()=>{

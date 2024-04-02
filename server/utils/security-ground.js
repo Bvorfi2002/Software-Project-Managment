@@ -56,6 +56,10 @@ const verifyEmail = email => {
     return validator.isEmail(email);
 };
 
+const verify_phone_number = phone_number=>{
+  return new RegExp("\\+3556[789]\\d{7}").test(phone_number);
+}
+
 const verifyPasswordStrength = password => {
   if (passwordStrength(password).value === "Strong") 
     return true;
@@ -83,6 +87,7 @@ module.exports = {
   temporary_id_generator: temporary_id_generator,
   id_decrypter: id_decrypter,
   verifyEmail: verifyEmail,
+  verify_phone_number,
   verifyPasswordStrength: verifyPasswordStrength,
   verifyUserNameStrength: verifyUserNameStrength,
   password_generator: password_generator,

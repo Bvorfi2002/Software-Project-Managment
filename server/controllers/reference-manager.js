@@ -1,10 +1,18 @@
 const Reference = require('../models/contact/reference.js');
 
 const add_reference = async (new_reference)=>{
+    const reference_exists = check_reference_existence(new_reference.phone);
+    if(reference_exists)
+        return "Reference already exists!";
     const ref = new Reference({
         ...new_reference
     });
-    await ref.save();
+    return await ref.save();
+}
+
+const check_reference_existence = async (phone_number)=>{
+    const reference_that_may_exist = await Reference.findOne({phone: phone_number});
+    return reference_that_may_exist ? true : false;
 }
 
 const edit_reference = async (ref_id, new_info)=>{
@@ -16,6 +24,16 @@ const edit_reference = async (ref_id, new_info)=>{
         }
     })
     return response;
+}
+
+const edit_reference_phone_number = async (ref_id, new_phone_number)=>{
+    const reference_exists = check_reference_existence(new_phone_number);
+    if(reference_exists){
+        return { result: 2, message: 'A reference with this phone number exists already!' }
+    }else {
+        await Reference.findByIdAndUpdate(ref_id, { phone: new_phone_number });
+        return {result: 1, message: 'Reference\'s phone number updated' };
+    }
 }
 
 const delete_reference = async (ref_id)=>{
@@ -56,5 +74,6 @@ module.exports = {
     get_reference_by_id,
     delete_reference,
     get_sales_agent_refernces,
-    get_sales_agent_refernces_paged
+    get_sales_agent_refernces_paged,
+    edit_reference_phone_number
 }
