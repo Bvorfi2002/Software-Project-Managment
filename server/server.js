@@ -5,6 +5,8 @@ const fs = require('fs');
 const cors = require("cors");
 const {connectToDb} = require('./database/db.js')
 const allowedOrigins = ['https://localhost:3000'];
+const authRouter = require('./routers/auth.js');
+const userRouter = require('./routers/user.js');
 
 app.use(cors({
     origin: (origin, callback) => {
@@ -18,6 +20,9 @@ app.use(cors({
     credentials: true,
     optionsSuccessStatus: 204,
 }));
+
+app.use('/auth', authRouter);
+app.use('/user', userRouter);
 
 const options = {
     key: fs.readFileSync('./localhost.key'),

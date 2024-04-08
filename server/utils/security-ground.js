@@ -22,10 +22,10 @@ const otpVerifier = (temp_id, otp) => {
   if (retrievedOtp) {
     if (retrievedOtp === otp) return { result: true, code: 1 };
 
-    return { result: false, code: 2 };
+    return { result: false, code: 401 };
   }
 
-  return { result: false, code: 3 };
+  return { result: false, code: 500 };
 };
 
 const passwordHasher = password => {

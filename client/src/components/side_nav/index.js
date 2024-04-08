@@ -51,7 +51,8 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentSidenav, whiteSidenav, darkMode, sidenavColor } = controller;
   const location = useLocation();
-  const collapseName = location.pathname.replace("/", "");
+  const collapseNameArray = location.pathname.split("/");
+  const collapseName = collapseNameArray[collapseNameArray.length - 1];
 
   let textColor = "white";
 
@@ -86,7 +87,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   // Render all the routes from the routes.js (All the visible items on the Sidenav)
   const renderRoutes = routes.map(({ type, name, icon, title, noCollapse, key, href, route }) => {
     let returnValue;
-
+    console.log(collapseName.slice(0, collapseName.indexOf("/")))
     if (type === "collapse") {
       returnValue = href ? (
         <Link
@@ -99,7 +100,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
           <SidenavCollapse
             name={name}
             icon={icon}
-            active={key === collapseName}
+            active={key === collapseName.slice(0, collapseName.indexOf("/"))}
             noCollapse={noCollapse}
           />
         </Link>
