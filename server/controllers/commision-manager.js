@@ -1,7 +1,17 @@
 const express = require('express');
 const router = express.Router();
 
-const { commissionSalesAgentModel, commissionPhoneAgentModel } = require('../models/financial/commission');
+const { commissionSalesAgentModel, commissionPhoneAgentModel } = require('../models/financial/commission.js');
+const Sale = require('../models/financial/sale.js');
+const SalesAgent = require('../models/users/sales_agent.js');
+const PhoneAgent = require('../models/users/phone_agent.js');
+
+// Import the commission calculation functions
+const { 
+    calculateSpifCommission, 
+    calculateTieredCommission, 
+    calculatePhoneAgentCommission 
+} = require('../utils/commissionCalculator.js');
 
 // Get all commissions
 router.get('/', async (req, res) => {
@@ -16,12 +26,23 @@ router.get('/', async (req, res) => {
 
 // Create new commission
 router.post('/', async (req, res) => {
-    const { agentType, agent_id, commission_type, amount, date } = req.body;
+    const { agentType, agent_id, commission_type, amount, date, contractValue, namesCount, salesCount, saleValue, installationCompleted } = req.body;
+
+    // Calculate the commission based on the type
+    let calculatedAmount;
+    if (commission_type === 'spif') {
+        calculatedAmount = calculateSpifCommission(contractValue, namesCount);
+    } else if (commission_type === 'tiered') {
+        calculatedAmount = calculateTieredCommission(salesCount);
+    } else if (agentType === 'PhoneAgent') {
+        calculatedAmount = calculatePhoneAgentCommission(saleValue, installationCompleted);
+    }
+
     let CommissionModel = agentType === 'SalesAgent' ? commissionSalesAgentModel : commissionPhoneAgentModel;
     const newCommission = new CommissionModel({
         agent_id,
         commission_type,
-        amount,
+        amount: calculatedAmount,
         date
     });
 
