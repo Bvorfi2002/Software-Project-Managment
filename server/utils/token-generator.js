@@ -32,7 +32,7 @@ const tokenRefresher = (refreshToken) => {
     }
 }
 
-const authorize = (req, res, proceeding) => {
+const authorize = async (req, res, proceeding) => {
     const tokens = req.cookies.tokenCookie;
     if (tokens) {
         const checkAccess = tokenChecker(tokens.accessToken);
@@ -47,7 +47,7 @@ const authorize = (req, res, proceeding) => {
                     secure: true,
                     sameSite: 'none',
                 });
-                proceeding();
+                await proceeding();
             } else {
                 res.status(401).json(refreshAccess.content);
             }

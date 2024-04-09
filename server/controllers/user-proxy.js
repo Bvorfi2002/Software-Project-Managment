@@ -39,7 +39,7 @@ const generate_user = async (name, surname, gmail, phone, role) => {
     }
     try {
         const result = await new_user.save();
-        // await emailer.sendUserInfo(gmail, username, password);
+        await emailer.sendUserInfo(gmail, username, password);
         return result
     } catch (error) {
         return error.message;
@@ -48,7 +48,7 @@ const generate_user = async (name, surname, gmail, phone, role) => {
 
 const retrieve_user_by_username = async (username) => {
     const user = await User.find({ username: username });
-    return user;
+    return user[0];
 }
 
 const serve_user_info_by_id = async (user_id) => {
@@ -63,10 +63,10 @@ const serve_full_info_by_id = async (user_id) => {
 
 const first_degree_auth = async (username, password) => {
     const user = await retrieve_user_by_username(username);
-    if (user) {
-        const passwordVerification = security_ground.passwordVerifier(user.password, password);
+    if (Object.keys(user).length > 0) {
+        const passwordVerification = security_ground.passwordVerifier(password, user.password);
         if (passwordVerification)
-            return user.multifactor ? { result: true, code: 202, info: { id: user._id, email: user.email, role: kind } } : { result: true, user_info: { user_id: user._id, role: user.kind } }
+            return user.multifactor ? { result: true, code: 202, info: { id: user._id, email: user.email, role: user.kind } } : { result: true, user_info: { user_id: user._id, role: user.kind } }
         else
             return { result: false, message: "Wrong password!", code: 401 }
     } else {

@@ -14,6 +14,9 @@ Coded by www.creative-tim.com
 */
 
 import { useEffect } from "react";
+import {logout} from "../../scripts/login-scripts.js";
+import {useNavigate} from "react-router-dom";
+import {useSnackbar} from "notistack";
 
 // react-router-dom components
 import { useLocation, NavLink } from "react-router-dom";
@@ -53,6 +56,9 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const location = useLocation();
   const collapseNameArray = location.pathname.split("/");
   const collapseName = collapseNameArray[collapseNameArray.length - 1];
+  const {enqueueSnackbar, closeSnackbar} = useSnackbar();
+  const notification = {add: enqueueSnackbar, close: closeSnackbar};
+  const navigator = useNavigate();
 
   let textColor = "white";
 
@@ -178,7 +184,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
           variant="gradient"
           color={sidenavColor}
           fullWidth
-          onClick={()=>console.log('logging out')}
+          onClick={()=>logout(navigator, notification)}
         >
           <Icon>logout</Icon>
           Log-out
