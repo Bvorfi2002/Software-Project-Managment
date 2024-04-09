@@ -1,24 +1,13 @@
 import React, { useEffect } from "react";
 import {useNavigate} from "react-router-dom";
-
-const role_to_path = {
-    'SalesAgent': 'sales_agent'
-}
+import {authorize} from '../../scripts/authorization-script.js';
 
 function SafeRoute(props){
 
+    const navigator = useNavigate();
+
     useEffect(()=>{
-        fetch(process.env.SERVER_URL + "/authorization")
-        .then(response=>{
-            if(response.status === 200){
-                return response.json();
-            } else {
-                navigator('/');
-            }
-        })
-        .then(data=>{
-            navigator('/' + role_to_path[data])
-        })
+        authorize(navigator);
     }, [])
 
     return (

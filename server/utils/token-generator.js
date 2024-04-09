@@ -37,7 +37,7 @@ const authorize = async (req, res, proceeding) => {
     if (tokens) {
         const checkAccess = tokenChecker(tokens.accessToken);
         if (checkAccess.result) {
-            proceeding();
+            await proceeding();
         } else {
             const refreshAccess = tokenRefresher(tokens.refreshToken);
             if (refreshAccess.result) {

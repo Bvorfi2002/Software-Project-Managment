@@ -12,17 +12,17 @@ const verifyLoginInfo = (loginInfo, notification) => {
     }
 }
 
-const verifyOtp = (otp)=>{
-    for(let key in otp){
-        if(!otp[key])
+const verifyOtp = (otp) => {
+    for (let key in otp) {
+        if (!otp[key])
             return false;
     }
     return true;
 }
 
-const generateOtpString = (otp)=>{
+const generateOtpString = (otp) => {
     let otpString = "";
-    for(let key in otp)
+    for (let key in otp)
         otpString += otp[key];
     return otpString
 }
@@ -39,6 +39,7 @@ export const login = (loginInfo, notification, naviagtor, controlLoading) => {
             headers: {
                 "Content-type": "application/json"
             },
+            credentials: "include",
             body: JSON.stringify(loginInfo)
         })
             .then(response => {
@@ -69,64 +70,69 @@ export const login = (loginInfo, notification, naviagtor, controlLoading) => {
 export const otpVerification = (otp, notification, navigator, controlLoading) => {
     if (verifyOtp(otp)) {
         const otpString = generateOtpString(otp)
+        controlLoading(true);
         fetch(SERVER_URL + "/auth/otp-verification", {
             method: "POST",
             headers: {
                 "Content-type": "application/json"
             },
+            credentials: "include",
             body: JSON.stringify({ userid: localStorage.getItem("temp_id"), otp: otpString, role: localStorage.getItem("temp_role") })
         })
-        .then(response=>{
-            controlLoading(false);
-            if(response.status === 200){
-                const role = localStorage.getItem('temp_role');
-                localStorage.removeItem('temp_role');
-                localStorage.removeItem('temp_id');
-                console.log(role);
-                navigator("/" + role_to_path[role]);
-            } else if (response.status === 500){
-                notification.add("OTP is expired", { variant: "error" });
+            .then(response => {
+                controlLoading(false);
+                if (response.status === 200) {
+                    const role = localStorage.getItem('temp_role');
+                    localStorage.removeItem('temp_role');
+                    localStorage.removeItem('temp_id');
+                    console.log(role);
+                    navigator("/" + role_to_path[role]);
+                } else if (response.status === 500) {
+                    notification.add("OTP is expired", { variant: "error" });
+                    setTimeout(notification.close, 4000);
+                    localStorage.removeItem('temp_role');
+                    localStorage.removeItem('temp_id');
+                    navigator("/");
+                }
+                else {
+                    return response.json();
+                }
+            })
+            .then(data => {
+                if (typeof data === "string") {
+                    notification.add("OTP is not correct", { variant: "error" });
+                    setTimeout(notification.close, 4000);
+                }
+            })
+            .catch(error => {
+                controlLoading(false);
+                console.log(error);
+                notification.add("Something went wrong with the server!", { variant: "info" });
                 setTimeout(notification.close, 4000);
-                localStorage.removeItem('temp_role');
-                localStorage.removeItem('temp_id');
-                navigator("/");
-            } 
-            else {
-                return response.json();
-            }
-        })
-        .then(data=>{
-            if(typeof data === "string"){
-                notification.add("OTP is not correct", { variant: "error" });
-                setTimeout(notification.close, 4000);
-            }
-        })
-        .catch(error=>{
-            controlLoading(false);
-            console.log(error);
-            notification.add("Something went wrong with the server!", { variant: "info" });
-            setTimeout(notification.close, 4000);
-        })
+            })
     } else {
+        controlLoading(false);
         notification.add("OTP is not set", { variant: "error" });
         setTimeout(notification.close, 4000);
     }
 }
 
-export const logout = (navigator, notification)=>{
-    fetch(SERVER_URL + "/auth/logout")
-    .then(response=>{
-        if(response.status === 200){
-            notification.add("Logging out", {variant: "info"});
-            navigator("/");
-        } else{
+export const logout = (navigator, notification) => {
+    fetch(SERVER_URL + "/auth/logout", {
+        method: "POST"
+    })
+        .then(response => {
+            if (response.status === 200) {
+                notification.add("Logging out", { variant: "info" });
+                navigator("/");
+            } else {
+                notification.add("Something went wrong with the server!", { variant: "info" });
+            }
+            setTimeout(notification.close, 4000);
+        })
+        .catch(error => {
+            console.log(error);
             notification.add("Something went wrong with the server!", { variant: "info" });
-        }
-        setTimeout(notification.close, 4000);
-    })
-    .catch(error=>{
-        console.log(error);
-        notification.add("Something went wrong with the server!", { variant: "info" });
-        setTimeout(notification.close, 4000);
-    })
+            setTimeout(notification.close, 4000);
+        })
 }

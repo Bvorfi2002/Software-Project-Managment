@@ -21,7 +21,7 @@ app.post('/login', async (req, res)=>{
             res.status(response.code).json({userid: temp_id, role: response.info.role});
         } else{
             const tokenObj = await tokenManager.tokenIssuing(response.user_info);
-            await cookieManager.createCookie(res, tokenObj);
+            cookieManager.createCookie(res, tokenObj);
             res.status(200).json({role: response.user_info.role});
         }
     } else{
@@ -34,21 +34,21 @@ app.post('/otp-verification', async (req, res)=>{
     if(result.result){
         const user_id = security_ground.id_decrypter(req.body.userid)
         const tokenObj = await tokenManager.tokenIssuing({user_id: user_id, role: req.body.role});
-        await cookieManager.createCookie(res, tokenObj);
+        cookieManager.createCookie(res, tokenObj);
         res.status(200).json("Login successful!");
     } else {
         res.status(result.code).json("Authentication failed!");
     }
 });
 
-app.get('/logout', async (req, res)=>{
-    await cookieManager.deleteCookie(res);
+app.post('/logout', async (req, res)=>{
+    cookieManager.deleteCookie(res);
     res.status(200).json("Logging out!");
 })
 
 app.get('/authorization', async (req, res)=>{
     await tokenManager.authorize(req, res, async ()=>{
-        const role = tokenManager.identify_role();
+        const role = tokenManager.identify_role(req);
         res.status(200).json(role);
     });
 })
