@@ -6,7 +6,7 @@ import PageModel from "../page_model.js"
 
 function PhoneAgentView() {
     return (
-        <PageModel prefix="/phone_agent" routes={routes}>
+        <PageModel prefix="" routes={routes}>
             <PhoneAgentPage />
         </PageModel>
     )

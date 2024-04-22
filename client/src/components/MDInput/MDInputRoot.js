@@ -19,7 +19,7 @@ import { styled } from "@mui/material/styles";
 
 export default styled(TextField)(({ theme, ownerState }) => {
   const { palette, functions } = theme;
-  const { error, success, disabled } = ownerState;
+  const { error, success, disabled, nonTransparent } = ownerState;
 
   const { grey, transparent, error: colorError, success: colorSuccess } = palette;
   const { pxToRem } = functions;
@@ -62,10 +62,32 @@ export default styled(TextField)(({ theme, ownerState }) => {
     },
   });
 
+  const nonTransparentStyles = ()=>({
+
+    "& label": {
+      color: "white"
+    },
+
+    "& input": {
+      color: "white"
+    },
+
+    "& .Mui-focused": {
+      "& .MuiOutlinedInput-notchedOutline, &:after": {
+        borderColor: "white",
+      },
+    },
+
+    "& .MuiInputLabel-root.Mui-focused": {
+      color: "white",
+    },
+  })
+
   return {
     backgroundColor: disabled ? `${grey[200]} !important` : transparent.main,
     pointerEvents: disabled ? "none" : "auto",
     ...(error && errorStyles()),
     ...(success && successStyles()),
+    ...(nonTransparent && nonTransparentStyles())
   };
 });
