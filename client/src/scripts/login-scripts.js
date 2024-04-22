@@ -119,7 +119,8 @@ export const otpVerification = (otp, notification, navigator, controlLoading) =>
 
 export const logout = (navigator, notification) => {
     fetch(SERVER_URL + "/auth/logout", {
-        method: "POST"
+        method: "POST",
+        credentials: 'include'
     })
         .then(response => {
             if (response.status === 200) {

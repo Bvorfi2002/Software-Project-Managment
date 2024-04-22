@@ -41,7 +41,7 @@ app.post('/otp-verification', async (req, res)=>{
     }
 });
 
-app.post('/logout', async (req, res)=>{
+app.post('/logout', (req, res)=>{
     cookieManager.deleteCookie(res);
     res.status(200).json("Logging out!");
 })

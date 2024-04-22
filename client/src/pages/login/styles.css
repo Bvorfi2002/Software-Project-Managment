@@ -3,8 +3,6 @@ Eshima21
 */
 body {
     margin: 0;
-    width: 100vw;
-    height: 100vh;
     /* background-color: #7979f7; */
   }
 
@@ -12,7 +10,7 @@ body {
     background: #4e54c8;  
     background: -webkit-linear-gradient(to left, #8f94fb, #4e54c8);  
     width: 100vw;
-    height:100vh;   
+    height:100vh;  
     display: flex;
     align-items: center;
     justify-content: center;
@@ -20,9 +18,7 @@ body {
 
   .circles{
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
+    width: 90%;
     height: 100%;
     overflow: hidden;
     z-index: 0;
@@ -136,7 +132,7 @@ body {
   .inner-desktop {
     width: 900px; 
     height: 510.38px; 
-    background-color:  #7979f7e4;
+    background-image: radial-gradient(circle at 50% 50%, #7979f7e4, #7979f7e4, #7979f7e4, white);
     display: flex;
     justify-content: space-between;
     border-radius: 20.82px; 
@@ -185,10 +181,10 @@ body {
   
   .logo2 {
     position: absolute;
-    left: -130px; /* Adjust X position */
-    top: 255px; /* Adjust Y position */
-    width: 197px; /* Set width */
-    height: 212px; /* Set height */
+    left: -230px; /* Adjust X position */
+    top: 180px; /* Adjust Y position */
+    width: 300px; /* Set width */
+    height: 320px; /* Set height */
     z-index: 4; /* Set a higher z-index to bring it in front */
   }
 
