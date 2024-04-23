@@ -1,15 +1,28 @@
 const { FinishedCall, ReservedCall, RedListCall } = require('../models/contact/call.js');
 
 const create_finished_call = async (call)=>{
-    const finished_call = new FinishedCall({
-        ...call
-    });
-    return await finished_call.save();
+    try {
+        const finishedCall = new FinishedCall({
+            ...call
+        });
+        const savedCall = await finishedCall.save();
+        return { result: true, message: "created successfully" };
+    } catch (error) {
+        return {result: false, message: error.message }
+    }
 }
 
-const create_finished_call_by_reserved_call = async (reserved_call_id)=>{
-    const reserved_call = await ReservedCall.findById(reserved_call_id);
-    return await reserved_call.toFinished();
+const create_finished_call_by_reserved_call = async (reserved_call_id, outcome)=>{
+    try {
+        const reservedCall = await ReservedCall.findById(reserved_call_id);
+        if (!reservedCall) {
+            throw new Error('Reserved call not found');
+        }
+        const finishedCall = await reservedCall.toFinished(outcome);
+        return { result: true, message: "created successfully" };
+    } catch (error) {
+        return { result: true, message: error.message }
+    }
 }
 
 const create_red_list_call = async (call)=>{
@@ -25,10 +38,15 @@ const create_red_list_call_by_reserved = async (reserved_call_id)=>{
 }   
 
 const create_reserved_call = async (call)=>{
-    const reserved_call = new ReservedCall({
-        ...call
-    });
-    return await reserved_call.save();
+    try {
+        const reservedCall = new ReservedCall({
+            ...call
+        });
+        const savedCall = await reservedCall.save();
+        return { result: true, message: error.message };
+    } catch (error) {
+        return { result: false, message: error.message }
+    }
 }
 
 const create_reserved_call_by_red_list = async (red_list_call_id)=>{

@@ -3,9 +3,6 @@ const app = express();
 const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser');
 const tokenManager = require('../utils/token-generator.js');
-const cookieManager = require('../utils/cookie-manager.js')
-const security_ground = require('../utils/security-ground.js')
-const email = require('../utils/email.js');
 const user_proxy = require('../controllers/user-proxy.js');
 require('dotenv').config();
 
@@ -26,9 +23,38 @@ app.post('/generate', async (req, res)=>{
     })
 });
 
-app.put('/update', (req, res)=>{
-
+app.put('/update/general', async (req, res)=>{
+    await tokenManager.authorize(req, res, async ()=>{
+        const response = user_proxy.edit_user(req.body.userid, req.body.new_info);
+        if(response['result']){
+            res.status(200).json(response['message']);
+        }else{
+            res.status(400).json(response['message']);
+        }
+    })
 });
+
+app.put('/update/username', async (req, res)=>{
+    await tokenManager.authorize(req, res, async ()=>{
+        const update_result = await user_proxy.update_username(req.body.userid, req.body.new_username);
+        if(update_result.result === 1){
+            res.status(200).json(update_result.message);
+        }else {
+            res.status(400).json(update_result.message);
+        }
+    })
+});
+
+app.put("/update/password", async (req, res)=>{
+    await tokenManager.authorize(req, res, async ()=>{
+        const update_result = await user_proxy.update_password(req.body.userid, req.body.old_pass, req.body.new_pass);
+        if(update_result.result === 1){
+            res.status(200).json(update_result.message);
+        }else {
+            res.status(400).json(update_result.message);
+        }
+    })
+})
 
 app.delete('/delete', async (req, res)=>{
     await tokenManager.authorize(req, res, async ()=>{
