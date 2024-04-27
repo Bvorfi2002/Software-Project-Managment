@@ -18,8 +18,8 @@ function App() {
             {/* <Route path="/admin/*" element={<AdminView />}/>
             <Route path="/chief/*" element={<ChiefView />}/> */}
             {/* <Route path="/sales_agent/*" element={<SalesAgentView />}/> */}
-            <Route path="/*" element={<PhoneAgentView />}/>
-            {/* <Route path="/marketing_manager/*" element={<MarketingManagerView />}/> */}
+            {/* <Route path="/phone_agent" element={<PhoneAgentView />}/> */}
+            <Route path="/*" element={<MarketingManagerView />}/>
             {/* <Route path="/installator/*" element={<InstallatorView />}/> */}
             {/* <Route path="/inventory_manager/*" element={<InventoryManagerView />}/> */}
           </Routes>

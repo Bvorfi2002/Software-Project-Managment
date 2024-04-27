@@ -11,7 +11,7 @@ const referenceSchema = new mongoose.Schema({
     profession: { type: String, required: true },
     comments: String,
     qualified: { type: Boolean, default: false },
-    referralName: { type: String, required: true }, //What does this mean denis?
+    referralName: { type: String, required: false }, //What does this mean denis?
     phone: { type: String, required: true },
     freeTime: {
         start: {
