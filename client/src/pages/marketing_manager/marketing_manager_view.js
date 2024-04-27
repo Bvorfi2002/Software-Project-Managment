@@ -6,7 +6,7 @@ import PageModel from "../page_model.js"
 
 function MarketingManagerView() {
     return (
-        <PageModel prefix="" routes={routes}>
+        <PageModel prefix="/marketing_manager" routes={routes}>
             <MarketingManagerPage />
         </PageModel>
     )
