@@ -4,6 +4,33 @@ const router = express.Router();
 const Transaction = require('../models/financial/transaction.js');
 const SalesAgent = require('../models/users/sales_agent.js');
 
+const create_transaction = async (transactionObj) => {
+    try {
+        const transaction = new Transaction({
+            transaction_type: transactionObj.transaction_type,
+            incoming: transactionObj.incoming,
+            date: transactionObj.date,
+            comments: transactionObj.comments,
+            amount: transactionObj.amount
+        });
+
+        await transaction.save();
+    } catch (error) {
+        console.error(`Error creating transaction: ${error.message}`);
+    }
+}
+
+const get_transaction_amount_by_type = async (type_of_transaction) => {
+    try {
+        const transactions = await Transaction.find({transaction_type: type_of_transaction});
+        const totalAmount = transactions.reduce((sum, transaction) => sum + transaction.amount, 0);
+        return totalAmount;
+        
+    } catch (error) {
+        console.error('Error fetching transactions:', error);
+    }
+}
+
 // Get all transactions
 router.get('/', async (req, res) => {
     try {
