@@ -16,7 +16,8 @@ const monthly_commission_schema = new mongoose.Schema({
     agent_id: {type: mongoose.Schema.Types.ObjectId, ref: "User"},
     approved: {type: Boolean, required: true, default: false},
     amount: {type: mongoose.Schema.Types.Decimal128, required: true},
-    start_date: {type: Date, required: true}
+    start_date: {type: Date, required: true},
+    released: {type: Boolean, required: true, default: false}
 })
 
 monthly_commission_schema.methods.releaseCommission = async ()=>{
