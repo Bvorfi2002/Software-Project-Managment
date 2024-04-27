@@ -28,7 +28,8 @@ function generateRandomReference() {
         phoneNumber: generateRandomString(10),
         comments: "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.",
         qualified: Math.random() < 0.5,// Randomly assign qualification status
-        called: Math.random() < 0.5
+        called: Math.random() < 0.5,
+        agent: "John Doe"
     };
 }
 
@@ -41,7 +42,7 @@ function generateRandomReferences(numReferences) {
     return references;
 }
 
-function ReferencesTable({ agent_id }) {
+function RedListTable({ agent_id }) {
 
     const [open, setOpen] = useState(false);
     const [confirmationOpen, setConfirmationOpen] = useState(false);
@@ -70,19 +71,19 @@ function ReferencesTable({ agent_id }) {
                     </MDTypography>
                 </MDBox>
             ),
-            status: <QualifiedCell status={reference.qualified ? "qualified" : "unqualified"} />,
-            contact_status: (
-                <>
-                    {reference.called ? <Icon color="success" fontSize="15pt">how_to_reg</Icon> : <Icon color="error" fontSize="15pt">close</Icon>}
-                </>
+            phone_agent: (
+                <MDBox>
+                    <MDTypography fontSize="8pt">
+                        {reference.agent}
+                    </MDTypography>
+                </MDBox>
             ),
             actions: (
                 <MDBox>
-                    <MDButton color="light" style={{ marginRight: "5px" }} onClick={() => {
-                        setActiveReference(reference);
-                        setOpen(true);
+                    <MDButton color="light" style={{ marginRight: "5px" }}  onClick={()=>{
+                        setConfirmationOpen(true);
                     }}>
-                        <Icon>edit</Icon>
+                        <p>Reserve new call</p>
                     </MDButton>
                     <MDButton color="light" style={{ fontSize: "8pt" }} onClick={()=>{
                         setConfirmationOpen(true);
@@ -97,17 +98,12 @@ function ReferencesTable({ agent_id }) {
         { Header: "reference", accessor: 'reference', align: 'left' },
         { Header: 'phone number', accessor: 'phoneNumber', align: 'center' },
         { Header: 'address', accessor: 'address', align: 'center' },
-        { Header: 'status', accessor: 'status', align: 'center' },
-        { Header: 'contact status', accessor: 'contact_status', align: 'center' },
+        { Header: 'phone agent', accessor: 'phone_agent', align: 'center'},
         { Header: 'actions', accessor: 'actions', align: 'center' }
     ]
 
     return (
         <>
-            <EditReferenceModal reference={activeReference} open={open} handleClose={() => {
-                setOpen(false);
-                setActiveReference(null);
-            }} />
             <ConfirmationModal open={confirmationOpen} handleClose={()=>setConfirmationOpen(false)}/>
             <Card>
                 <MDBox
@@ -123,7 +119,7 @@ function ReferencesTable({ agent_id }) {
                     justifyContent="space-between"
                 >
                     <MDTypography variant="h6" color="white">
-                        References
+                        Red List Calls
                     </MDTypography>
                 </MDBox>
                 <MDBox pt={3}>
@@ -140,4 +136,4 @@ function ReferencesTable({ agent_id }) {
     )
 }
 
-export default ReferencesTable;
+export default RedListTable;

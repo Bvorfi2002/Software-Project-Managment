@@ -4,8 +4,8 @@ const finishedCallSchema = new mongoose.Schema({
     date: {type: Date, default: ()=>new Date()},
     outcome: {
         type: String,
-        enum: ['No Answer', 'Another Outcome', 'Excessive Argument', 'Successful Call'],
-        default: 'No Answer'
+        enum: ['no answer', 'another outcome', 'excessive argument', 'successful'],
+        default: 'no answer'
     },
     reference_id: {type: mongoose.Schema.Types.ObjectId, ref: 'Reference'},
     p_ag_id: {type: mongoose.Schema.Types.ObjectId, ref: 'PhoneAgent'}
