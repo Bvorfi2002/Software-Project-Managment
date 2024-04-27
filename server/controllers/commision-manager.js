@@ -2,9 +2,11 @@ const express = require('express');
 const router = express.Router();
 
 const { commissionSalesAgentModel, commissionPhoneAgentModel } = require('../models/financial/commission.js');
+const MonthlyCommission = require('../models/financial/monthly_commission.js');
 const Sale = require('../models/financial/sale.js');
 const SalesAgent = require('../models/users/sales_agent.js');
 const PhoneAgent = require('../models/users/phone_agent.js');
+const {commissionSalesAgentModel, commissionPhoneAgentModel} = require('../models/financial/commission.js')
 
 // Import the commission calculation functions
 const { 
@@ -12,6 +14,149 @@ const {
     calculateTieredCommission, 
     calculatePhoneAgentCommission 
 } = require('../utils/commissionCalculator.js');
+
+const get_all_commissions = async () => {
+    const commissions = await Commission.find({});
+    return await commissions;
+}
+
+const create_spif_commission_phone_agent = async (saleObj) => {
+    const sale = new Sale({
+        ...saleObj
+    })
+
+    let calculatedAmount = 1.5;
+    if(sale.amount > 50) {
+        calculatedAmount += 5;
+    }
+
+    const commission = new commissionPhoneAgentModel({
+        agent_id: sale.p_ag_id,
+        amount: calculatedAmount,
+        commission_type: 'spif',
+        date: Date.now()
+    });
+
+    await commission.save();
+}
+
+const create_spif_commission_installation_phone_agent = async (id) => {
+    const commission = new commissionPhoneAgentModel({
+        agent_id: id,
+        amount: 10,
+        commission_type: 'spif',
+        date: Date.now()
+    });
+
+    await commission.save();
+}
+
+const create_spif_commission_sales_agent = async (saleObj) => {
+    try {
+        const sale = new Sale({
+            ...saleObj
+        })
+
+        let calculatedAmount;
+
+        const hasTenNames = sale.ref_count >= 10 ? true : false;
+        const saleAmount = sale.amount;
+    
+        if(saleAmount >= 295) {
+            calculatedAmount = hasTenNames ? 25 : 20;
+        }
+        else if (saleAmount >= 200 ) {
+            calculatedAmount = hasTenNames ? 20 : 15;
+        }
+        else if (saleAmount >= 100) {
+            calculatedAmount = hasTenNames ? 15 : 10;
+        }
+        else if (saleAmount >= 50) {
+            calculatedAmount = hasTenNames ? 10 : 5;
+        }
+
+        const commission = new commissionSalesAgentModel({
+            agent_id: sale.s_ag_id,
+            commission_type: 'spif',
+            amount: calculatedAmount,
+            date: Date.now(),
+        });
+
+        await commission.save();
+    }
+    catch (error) {
+        return `Error creating commission record: ${error.message}`;
+    }
+}
+
+const create_tiered_commission_sales_agent = async (saleObj) => {
+    try {
+        const sale = new Sale({
+            ...saleObj
+        })
+
+        const today = new Date();
+        const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+
+        const salesCount = await Sale.countDocuments({
+            s_ag_id: sale.s_ag_id,
+            date: {$gte: firstDayOfMonth},
+            approved: true
+        });
+
+        let calculatedAmount;
+
+        if(salesCount <= 3) {
+            calculatedAmount = 140;
+        }
+        else if(salesCount === 5) {
+            // 150 for each of the last two sales + 10 for each of the first three sales.
+            calculatedAmount = 330; 
+        }
+        else if(salesCount === 7) {
+            // 160 for each of the last two sales + 10 for each of the previous five sales.
+            calculatedAmount = 370;
+        }
+
+        const commission = new commissionSalesAgentModel({
+            agent_id: sale.s_ag_id,
+            commission_type: 'tiered',
+            amount: calculatedAmount,
+            date: Date.now(),
+        });
+
+        await commission.save();
+    }
+    catch(error) {
+        return `Error creating commission record: ${error.message}`;
+    }
+}
+
+const create_all_monthly_commissions = async (sales_agents) => {
+    const commissions = [];
+    
+    for(const agent of sales_agents) {
+        const monthly_commission = new MonthlyCommission({
+            agent_id: agent.sales_agent_id,
+            amount: 0,
+            start_date: Date()
+        });
+
+        commissions.push(monthly_commission);
+    }
+
+    await MonthlyCommission.insertMany(commissions);
+}
+
+const create_monthly_commission = async (sales_agent) => {
+    const monthly_commission = new MonthlyCommission({
+        agent_id: sales_agent.sales_agent_id,
+        amount: 0,
+        start_date: Date()
+    });
+
+    await monthly_commission.save();
+}
 
 // Get all commissions
 router.get('/', async (req, res) => {
