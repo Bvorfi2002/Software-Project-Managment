@@ -29,16 +29,6 @@ const options = {
     cert: fs.readFileSync('./localhost.crt'),
 };
 
-// Import the routes from controllers
-const salesManagerRoutes = require('./controllers/sales-manager.js');
-const transactionControllerRoutes = require('./controllers/transaction-controller.js');
-const commissionManagerRoutes = require('./controllers/commission-manager.js');
-
-// Use the routes in application
-app.use('/sales', salesManagerRoutes);
-app.use('/transactions', transactionControllerRoutes);
-app.use('/commissions', commissionManagerRoutes);
-
 const port = 5443;
 const server = https.createServer(options, app);
 
