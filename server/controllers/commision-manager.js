@@ -38,6 +38,7 @@ const create_spif_commission_phone_agent = async (saleObj) => {
     });
 
     await commission.save();
+    await update_monthly_commission(commission);
 }
 
 const create_spif_commission_installation_phone_agent = async (id) => {
@@ -49,6 +50,7 @@ const create_spif_commission_installation_phone_agent = async (id) => {
     });
 
     await commission.save();
+    await update_monthly_commission(commission);
 }
 
 const create_spif_commission_sales_agent = async (saleObj) => {
@@ -83,6 +85,7 @@ const create_spif_commission_sales_agent = async (saleObj) => {
         });
 
         await commission.save();
+        await update_monthly_commission(commission);
     }
     catch (error) {
         return `Error creating commission record: ${error.message}`;
@@ -126,36 +129,77 @@ const create_tiered_commission_sales_agent = async (saleObj) => {
         });
 
         await commission.save();
+        await update_monthly_commission(commission);
     }
     catch(error) {
         return `Error creating commission record: ${error.message}`;
     }
 }
 
-const create_all_monthly_commissions = async (sales_agents) => {
+const create_all_monthly_commissions = async (agents) => {
     const commissions = [];
     
-    for(const agent of sales_agents) {
-        const monthly_commission = new MonthlyCommission({
+    for(const agent of agents) {
+        if(agent.sales_agent_id !== undefined) {
+            const monthly_commission = new MonthlyCommission({
             agent_id: agent.sales_agent_id,
             amount: 0,
             start_date: Date()
-        });
+            });
 
-        commissions.push(monthly_commission);
+            commissions.push(monthly_commission);
+        }
+        else {
+            const monthly_commission = new MonthlyCommission({
+            agent_id: agent.phone_agent_id,
+            amount: 0,
+            start_date: Date()
+            });
+
+            commissions.push(monthly_commission);
+        }
     }
 
     await MonthlyCommission.insertMany(commissions);
 }
 
-const create_monthly_commission = async (sales_agent) => {
-    const monthly_commission = new MonthlyCommission({
-        agent_id: sales_agent.sales_agent_id,
+const create_monthly_commission = async (agent) => {
+    if(agent.sales_agent_id !== undefined) {
+        const monthly_commission = new MonthlyCommission({
+        agent_id: agent.sales_agent_id,
         amount: 0,
         start_date: Date()
-    });
+        });
 
-    await monthly_commission.save();
+        await monthly_commission.save();
+    }
+    else {
+        const monthly_commission = new MonthlyCommission({
+        agent_id: agent.phone_agent_id,
+        amount: 0,
+        start_date: Date()
+        });
+
+        await monthly_commission.save();
+    }
+}
+
+const update_monthly_commission = async (commission) => {
+    try {
+        const monthly_commission = await MonthlyCommission.findOne({agent_id: commission.agent_id});
+
+        if (!monthly_commission) {
+            throw new Error(`Monthly commission record not found for agent ${commission.agent_id}`);
+        }
+
+        monthly_commission.amount += commission.amount;
+
+        await monthly_commissions.save();
+    }
+    catch(error) {
+        console.error('Error updating monthly commission:', error.message);
+    }
+    
 }
 
 // Get all commissions
