@@ -7,6 +7,7 @@ const {connectToDb} = require('./database/db.js')
 const allowedOrigins = ['https://localhost:3000'];
 const authRouter = require('./routers/auth.js');
 const userRouter = require('./routers/user.js');
+const scheduleRouter = require("./routers/schedule.js");
 
 app.use(cors({
     origin: (origin, callback) => {
@@ -23,6 +24,7 @@ app.use(cors({
 
 app.use('/auth', authRouter);
 app.use('/user', userRouter);
+app.use('/schedule', scheduleRouter);
 
 const options = {
     key: fs.readFileSync('./localhost.key'),

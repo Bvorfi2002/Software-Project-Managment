@@ -6,7 +6,7 @@ function DateTableCell({date}){
     return (
         <MDBox>
             <MDTypography fontSize="8pt">
-                {date.toDateString()}
+                {date.toString().slice(0, 10)}
             </MDTypography>
         </MDBox>
     );
