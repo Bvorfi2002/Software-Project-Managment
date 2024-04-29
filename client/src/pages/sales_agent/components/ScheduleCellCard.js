@@ -13,9 +13,9 @@ const state_to_text = {
     'meeting': 'Meeting'
 }
 
-function ScheduleCellCard({state}){
+function ScheduleCellCard({ state, modalOpen }){
     return (
-        <MDButton color={state_to_color[state]}>
+        <MDButton color={state_to_color[state]} onClick={modalOpen}>
             {state_to_text[state]}
         </MDButton>
     );

@@ -24,7 +24,7 @@ const tokenRefresher = (refreshToken) => {
     console.log('Refreshing token');
     const checkToken = tokenChecker(refreshToken);
     if (checkToken.result) {
-        return { result: true, content: jwt.sign(checkToken.payload, process.env.JWT_KEY, { expiresIn: 900 }) }
+        return { result: true, content: jwt.sign({user_id: checkToken.payload.user_id, role: checkToken.payload.role}, process.env.JWT_KEY, { expiresIn: 900 }) }
     } else if (checkToken.code === 2) {
         return { result: false, content: "Token expired" }
     } else {
@@ -47,6 +47,7 @@ const authorize = async (req, res, proceeding) => {
                     secure: true,
                     sameSite: 'none',
                 });
+                req.cookies.tokenCookie.accessToken = refreshAccess.content;
                 await proceeding();
             } else {
                 res.status(401).json(refreshAccess.content);
@@ -63,10 +64,17 @@ const identify_role = (req)=>{
     return decoded.role;
 }
 
+const retrieve_id = (req)=>{
+    const access_token = req.cookies.tokenCookie.accessToken;
+    const decoded = jwt.verify(access_token, process.env.JWT_KEY);
+    return decoded.user_id;
+}
+
 module.exports = {
     tokenIssuing,
     tokenChecker,
     tokenRefresher,
     authorize,
-    identify_role
+    identify_role,
+    retrieve_id
 }

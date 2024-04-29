@@ -10,7 +10,7 @@ app.use(bodyParser.json());
 
 app.get('/personal_schedule', async (req, res)=>{
     await tokenManager.authorize(req, res, async ()=>{
-        const personal_schedule = await scheduleManager.get_schedule(req.param.sales_agent_id);
+        const personal_schedule = await scheduleManager.get_schedule(tokenManager.retrieve_id(req));
         if(personal_schedule){
             res.status(200).json(personal_schedule);
         } else {
@@ -21,12 +21,12 @@ app.get('/personal_schedule', async (req, res)=>{
 
 app.put('/edit/change_state', async (req, res)=>{
     await tokenManager.authorize(req, res, async ()=>{
-        const { s_ag_id, date, slot, new_state } = req.body;
-        const result = await scheduleManager.change_state(s_ag_id, date, slot, new_state);
-        if(result){
+        const { date, slot, new_state } = req.body;
+        const result = await scheduleManager.change_state(tokenManager.retrieve_id(req), new Date(date), slot, new_state);
+        if(result.result){
             res.status(200).json('Changed successfully');
         } else {
-            res.status(503).json("Internal server error");
+            res.status(result.code).json(result.message);
         }
     })
 })
