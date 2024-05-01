@@ -8,6 +8,7 @@ const allowedOrigins = ['https://localhost:3000'];
 const authRouter = require('./routers/auth.js');
 const userRouter = require('./routers/user.js');
 const scheduleRouter = require("./routers/schedule.js");
+const { generate_user } = require("./controllers/user-proxy.js");
 
 app.use(cors({
     origin: (origin, callback) => {
@@ -38,6 +39,8 @@ connectToDb((err) => {
     if (err) {
         console.log("Something went wrong with the server! Please try again later");
     } else {
+        generate_user("Brinaldo", "Vorfi", "bvorfi21@epoka.edu.al", '+355688555608', 'phone');
+        generate_user("Iglis", "Kociu", 'ikociu21@epoka.edu.al', '+355688555608', 'marketing');
         server.listen(port, () => {
             console.log(`Listening to HTTPS on port ${port}`);
         });
