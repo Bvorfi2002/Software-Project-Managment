@@ -2,9 +2,9 @@ const mongoose = require('mongoose');
 
 const meetingSchema = new mongoose.Schema({
     date: { type: Date, required: true },
-    startTime: { type: Date, required: true },
-    endTime: { type: Date, required: true },
-    agent: { type: mongoose.Schema.Types.ObjectId, ref: 'SalesAgent' },
+    time: { type: String, required: true},
+    sales_agent: { type: mongoose.Schema.Types.ObjectId, ref: 'SalesAgent' },
+    phone_agent: { type: mongoose.Schema.Types.ObjectId, ref: 'PhoneAgent' },
     referral: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Reference',

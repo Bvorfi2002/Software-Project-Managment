@@ -5,8 +5,13 @@ import ContentModel from "../../content_model";
 import MDBox from "../../../components/MDBox";
 import MeetingGraph from "../components/MeetingGraph";
 import ScheduleGraph from "../components/ScheduleGraph";
+import AddReferenceModal from "../components/AddReferenceModal";
+import { useState } from "react";
 
 function SalesDashBoardContent() {
+
+    const [open, setOpen] = useState(false)
+
     return (
         <ContentModel>
             <MDBox py={3}>
@@ -18,7 +23,7 @@ function SalesDashBoardContent() {
                         <SalesAgentStatisticCard statistic_type="meeting_stat" />
                     </Grid>
                     <Grid item xs={12} md={6} lg={4}>
-                        <SalesAgentStatisticCard statistic_type="reference_stat" />
+                        <SalesAgentStatisticCard statistic_type="reference_stat" clickEvent={()=>setOpen(true)}/>
                     </Grid>
                 </Grid>
                 <Grid container marginTop="10px" justifyContent="center" spacing={3}>
@@ -29,6 +34,7 @@ function SalesDashBoardContent() {
                         <MeetingGraph />
                     </Grid>
                 </Grid>
+                <AddReferenceModal open={open} handleClose={()=>setOpen(false)}/>
             </MDBox>
         </ContentModel>
     )

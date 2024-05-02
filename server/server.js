@@ -8,7 +8,9 @@ const allowedOrigins = ['https://localhost:3000'];
 const authRouter = require('./routers/auth.js');
 const userRouter = require('./routers/user.js');
 const scheduleRouter = require("./routers/schedule.js");
-const { generate_user } = require("./controllers/user-proxy.js");
+const referenceRouter = require("./routers/references.js");
+const meetingRouter = require('./routers/meetings.js');
+const { add_meeting } = require('./controllers/meeting-manager');
 
 app.use(cors({
     origin: (origin, callback) => {
@@ -26,6 +28,8 @@ app.use(cors({
 app.use('/auth', authRouter);
 app.use('/user', userRouter);
 app.use('/schedule', scheduleRouter);
+app.use('/references', referenceRouter);
+app.use('/meeting', meetingRouter);
 
 const options = {
     key: fs.readFileSync('./localhost.key'),
@@ -39,8 +43,6 @@ connectToDb((err) => {
     if (err) {
         console.log("Something went wrong with the server! Please try again later");
     } else {
-        generate_user("Brinaldo", "Vorfi", "bvorfi21@epoka.edu.al", '+355688555608', 'phone');
-        generate_user("Iglis", "Kociu", 'ikociu21@epoka.edu.al', '+355688555608', 'marketing');
         server.listen(port, () => {
             console.log(`Listening to HTTPS on port ${port}`);
         });

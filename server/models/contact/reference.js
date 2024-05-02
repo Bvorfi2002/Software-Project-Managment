@@ -11,23 +11,13 @@ const referenceSchema = new mongoose.Schema({
     profession: { type: String, required: true },
     comments: String,
     qualified: { type: Boolean, default: false },
-    referralName: { type: String, required: false }, //What does this mean denis?
+    referralName: { type: String, required: false },
     phone: { type: String, required: true },
-    freeTime: {
-        start: {
-            type: Date,
-            required: false //It is not required by default. The idea is that you put the free time after you call them
-        },
-        end: {
-            type: Date,
-            required: false
-        }
-    },
     called: {type: Boolean, required: true, default: false},
     added_by: { type: mongoose.Schema.Types.ObjectId, ref: "SalesAgent"}
 });
 
-referenceSchema.methods.toClient = async (availability, sales_agent_id, p_agent_id)=>{
+referenceSchema.methods.toClient = async function (sales_agent_id, p_agent_id){
     const new_client = new Client({
         name: this.name,
         surname: this.surname,
@@ -36,7 +26,6 @@ referenceSchema.methods.toClient = async (availability, sales_agent_id, p_agent_
         profession: this.profession,
         comments: this.comments,
         phone: this.phone,
-        availability: availability,
         p_agent_id: p_agent_id,
         s_agent_id: sales_agent_id
     });

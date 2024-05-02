@@ -4,7 +4,8 @@ const check_if_in_range = (dateToCheck) => {
     // const startDate = new Date();
     const startDate = new Date("2024-04-09");
     var endDate = new Date();
-    endDate.setDate(startDate.getDate() + 2);
+    endDate.setDate(startDate.getDate() + 3);
+    endDate.setMonth(startDate.getMonth());
     return (dateToCheck >= startDate && dateToCheck <= endDate);
 }
 
@@ -16,8 +17,9 @@ const change_state = async (s_ag_id, date, slot, new_state) => {
         const sales_agent = await SalesAgent.findOne({ _id: s_ag_id });
         const schedule = sales_agent.schedule;
         const new_schedule = schedule.map(day => {
-            if (day.date.getTime() === date.getTime())
+            if (day.date.setHours(0, 0, 0, 0) === date.setHours(0, 0, 0, 0)){
                 day[slot] = new_state;
+            }
             return day;
         })
         sales_agent.schedule = new_schedule;
@@ -53,6 +55,18 @@ const get_schedule = async (s_ag_id) => {
     return sales_agent[0].schedule;
 }
 
+const find_sales_agents_by_schedule = async (date, time_slot)=>{
+    const sales_agents = await SalesAgent.find({});
+    const agents_to_return = []
+    for(let i=0; i<sales_agents.length; i++) {
+        for(let j=0; j<sales_agents[i].schedule.length; j++) {
+            if(sales_agents[i].schedule[j].date.getTime() === date.getTime() && sales_agents[i].schedule[j][time_slot] === 'scheduled')
+                agents_to_return.push(sales_agents[i]);
+        }
+    }
+    return agents_to_return;
+}
+
 // const generate_default_day = async ()=>{
 
 // }
@@ -66,6 +80,7 @@ module.exports = {
     change_state_by_marketing_manager,
     move_forward,
     get_schedule,
+    find_sales_agents_by_schedule
     // generate_default_day,
     // store_to_previous_days
 }

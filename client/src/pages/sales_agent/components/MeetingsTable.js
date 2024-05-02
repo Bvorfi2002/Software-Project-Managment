@@ -1,45 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DataTable from "../../../components/Tables/DataTable";
 import MDButton from "../../../components/MDButton";
 import MDBox from "../../../components/MDBox";
 import { Card, Icon } from "@mui/material";
 import MDTypography from "../../../components/MDTypography";
 import OutcomeCell from "./OutcomeCell";
+import MeetingDetailsModal from "./MeetingDetailsModal";
+import { get_meetings } from "../scripts/meeting-scripts";
+import {useSnackbar} from "notistack"
 
-//This section simulates the requests
-function generateRandomString(length) {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let result = '';
-    for (let i = 0; i < length; i++) {
-        result += characters.charAt(Math.floor(Math.random() * characters.length));
-    }
-    return result;
-}
-
-// Function to generate a random reference
-function generateRandomReference() {
-    return {
-        name: generateRandomString(8),
-        surname: generateRandomString(8),
-        phone: "+3556yxxxxxxx",
-        address: generateRandomString(10),
-        city: generateRandomString(6),
-        meeting_outcome: 'not_updated'
-    };
-}
-
-// Function to generate an array of random references
-function generateRandomReferences(numReferences) {
-    const references = [];
-    for (let i = 0; i < numReferences; i++) {
-        references.push(generateRandomReference());
-    }
-    return references;
-}
 
 function MeetingsTable({ agent_id }) {
 
-    const [meetings, setMeetings] = useState(generateRandomReferences(10));
+    const [meetings, setMeetings] = useState([]);
+    const [meetingsUpdated, setMeetingsUpdated] = useState(false);
     const rows = meetings.map(meeting => {
         return {
             name: (
@@ -65,9 +39,7 @@ function MeetingsTable({ agent_id }) {
             ),
             outcome: <OutcomeCell outcome={meeting.meeting_outcome} />,
             actions: (
-                <MDButton color="light">
-                    {"View details"}
-                </MDButton>
+                <MeetingDetailsModal selectedMeeting={meeting}/>
             ),
         }
     });
@@ -78,6 +50,12 @@ function MeetingsTable({ agent_id }) {
         { Header: 'outcome', accessor: 'outcome', align: 'center' },
         { Header: 'actions', accessor: 'actions', align: 'center' }
     ]
+    const {enqueueSnackbar, closeSnackbar} = useSnackbar()
+    const notification = {add: enqueueSnackbar, close: closeSnackbar}
+
+    useEffect(()=>{
+        get_meetings(notification, (data)=>{setMeetings(data)});
+    }, [meetingsUpdated])
 
     return (
         <Card>
@@ -100,7 +78,7 @@ function MeetingsTable({ agent_id }) {
                     <MDButton color="light">
                         <Icon color="dark">tune</Icon>
                         {"Filter"}
-                    </MDButton>
+                    </MDButton> 
                     <MDButton color="light">
                         {"Add instant meeting"}
                     </MDButton>

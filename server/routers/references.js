@@ -4,16 +4,17 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const tokenManager = require('../utils/token-generator.js');
 const referenceManager = require('../controllers/reference-manager.js');
+const { ObjectId } = require('mongodb');
 
 app.use(cookieParser());
 app.use(bodyParser.json());
 
 app.post('/add', async (req, res)=>{
     await tokenManager.authorize(req, res, async ()=>{
-        const new_reference = req.body;
+        const new_reference = {...req.body, added_by: tokenManager.retrieve_id(req)};
         const result = await referenceManager.add_reference(new_reference);
         if(typeof result === 'string'){
-            res.status(401).json('Reference already exists!');
+            res.status(403).json('Reference already exists!');
         } else {
             res.status(200).json('Reference added successfully!');
         }

@@ -21,7 +21,7 @@ const type_to_title = {
     'schedule_stat': 'Schedule'
 }
 
-function SalesAgentStatisticCard({agent_id, statistic_type}) {
+function SalesAgentStatisticCard({agent_id, statistic_type, clickEvent}) {
     return (
         <MDBox mb={1.5}>
             <ComplexStatisticsCard
@@ -34,6 +34,7 @@ function SalesAgentStatisticCard({agent_id, statistic_type}) {
                     amount: "+55%",
                     label: "than lask week",
                 }}
+                clickEvent={clickEvent}
             />
         </MDBox>
     )

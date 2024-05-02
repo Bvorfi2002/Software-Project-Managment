@@ -85,7 +85,11 @@ function ScheduleTable({ agent_id }) {
             handleClose={()=>setOpen(false)} 
             currentState={stateOfChoice} 
             changeState={(new_state)=>{
-                change_state(notification, ()=>setChanged(true), new_state)
+                change_state(notification, ()=>{
+                    setChanged(true)
+                    setOpen(false)
+                }, new_state)
+                
             }}
             />
             <Card>

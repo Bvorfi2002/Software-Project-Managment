@@ -5,14 +5,14 @@ import MDTypography from "../../../components/MDTypography";
 const outcome_to_color = {
     'unsuccessful': 'error',
     'successful': 'success',
-    'not_updated': 'warning',
+    'Not Updated': 'warning',
     'canceled': 'secondary'
 }
 
 const outcome_to_text = {
     'unsuccessful': 'Unsuccessful',
     'successful': 'Successful',
-    'not_updated': 'Not updated',
+    'Not Updated': 'Not updated',
     'canceled': 'Canceled'
 }
 

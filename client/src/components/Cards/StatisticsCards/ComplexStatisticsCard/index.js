@@ -24,8 +24,13 @@ import Icon from "@mui/material/Icon";
 // Material Dashboard 2 React components
 import MDBox from "../../../MDBox";
 import MDTypography from "../../../MDTypography";
+import MDButton from "../../../MDButton";
+import { useState } from "react";
 
-function ComplexStatisticsCard({ color, title, count, percentage, icon }) {
+function ComplexStatisticsCard({ color, title, count, percentage, icon, clickEvent }) {
+
+  const [hoverStyle, setHoverStyle] = useState({});
+ 
   return (
     <Card>
       <MDBox display="flex" justifyContent="space-between" pt={1} px={2}>
@@ -55,6 +60,23 @@ function ComplexStatisticsCard({ color, title, count, percentage, icon }) {
       </MDBox>
       <Divider />
       <MDBox pb={2} px={2}>
+        {title === "References" ? 
+        <MDTypography component="p" variant="button" color="text" display="flex" alignItems="center">
+          <Icon color="primary">add_to_photos</Icon>
+          <MDTypography
+            component="span"
+            variant="button"
+            fontWeight="bold"
+            color="primary"
+            paddingLeft="5px"
+            style={{...hoverStyle}}
+            onMouseEnter={()=>setHoverStyle({textDecoration: "underline", cursor: "pointer"})}
+            onMouseLeave={()=>setHoverStyle({})}
+            onClick={clickEvent}
+          >
+            Add more
+          </MDTypography>
+      </MDTypography> : 
         <MDTypography component="p" variant="button" color="text" display="flex">
           <MDTypography
             component="span"
@@ -65,7 +87,7 @@ function ComplexStatisticsCard({ color, title, count, percentage, icon }) {
             {percentage.amount}
           </MDTypography>
           &nbsp;{percentage.label}
-        </MDTypography>
+        </MDTypography>}
       </MDBox>
     </Card>
   );

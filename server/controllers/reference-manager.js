@@ -1,7 +1,7 @@
 const Reference = require('../models/contact/reference.js');
 
 const add_reference = async (new_reference)=>{
-    const reference_exists = check_reference_existence(new_reference.phone);
+    const reference_exists = await check_reference_existence(new_reference.phone);
     if(reference_exists)
         return "Reference already exists!";
     const ref = new Reference({
@@ -11,7 +11,7 @@ const add_reference = async (new_reference)=>{
 }
 
 const add_reference_with_commission = async (new_reference)=>{
-    const reference_exists = check_reference_existence(new_reference.phone);
+    const reference_exists = await check_reference_existence(new_reference.phone);
     if(reference_exists)
         return "Reference already exists!";
     const ref = new Reference({

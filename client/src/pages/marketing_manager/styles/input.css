@@ -50,7 +50,7 @@
     background-color: green;
     border: none;
     width: 95%;
-    height: 40px;
+    min-height: 40px;
     color: white;
     transition: all ease-in-out 0.7s;
     background-image: url("./confirmation.png");

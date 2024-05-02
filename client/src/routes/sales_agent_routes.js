@@ -30,14 +30,6 @@ const routes = [
     route: "/meetings",
     component: <SalesMeetingContent />,
   },
-  {
-    type: "collapse",
-    name: "References",
-    key: "references",
-    icon: <Icon fontSize="small">link</Icon>,
-    route: "/references",
-    component: <SalesReferenceContent />,
-  },
 ];
 
 export default routes;
