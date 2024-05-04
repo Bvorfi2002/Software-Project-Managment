@@ -6,7 +6,7 @@ import MDBox from "../../../components/MDBox";
 import MDTypography from "../../../components/MDTypography";
 import AddReferenceForm from "./AddReferenceForm";
 
-function AddReferenceModal({open, handleClose, }){
+function AddReferenceModal({open, handleClose, showReference}){
 
     const style = {
         backgroundColor: "white",
@@ -43,7 +43,7 @@ function AddReferenceModal({open, handleClose, }){
                             Add new reference
                         </MDTypography>
                     </MDBox>
-                    <AddReferenceForm />
+                    <AddReferenceForm showReference={showReference}/>
                 </Box>
             </Fade>
         </Modal>

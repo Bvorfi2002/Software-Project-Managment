@@ -6,7 +6,6 @@ const MonthlyCommission = require('../models/financial/monthly_commission.js');
 const Sale = require('../models/financial/sale.js');
 const SalesAgent = require('../models/users/sales_agent.js');
 const PhoneAgent = require('../models/users/phone_agent.js');
-const {commissionSalesAgentModel, commissionPhoneAgentModel} = require('../models/financial/commission.js')
 
 // Import the commission calculation functions
 const { 
@@ -92,47 +91,22 @@ const create_spif_commission_sales_agent = async (saleObj) => {
     }
 }
 
-const create_tiered_commission_sales_agent = async (saleObj) => {
+const create_tiered_commission_sales_agent = async (s_ag_id, refCount) => {
     try {
-        const sale = new Sale({
-            ...saleObj
-        })
-
-        const today = new Date();
-        const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-
-        const salesCount = await Sale.countDocuments({
-            s_ag_id: sale.s_ag_id,
-            date: {$gte: firstDayOfMonth},
-            approved: true
-        });
-
-        let calculatedAmount;
-
-        if(salesCount <= 3) {
-            calculatedAmount = 140;
-        }
-        else if(salesCount === 5) {
-            // 150 for each of the last two sales + 10 for each of the first three sales.
-            calculatedAmount = 330; 
-        }
-        else if(salesCount === 7) {
-            // 160 for each of the last two sales + 10 for each of the previous five sales.
-            calculatedAmount = 370;
-        }
-
+        const calculatedAmount = 0.5 * refCount;
         const commission = new commissionSalesAgentModel({
-            agent_id: sale.s_ag_id,
+            agent_id: s_ag_id,
             commission_type: 'tiered',
             amount: calculatedAmount,
             date: Date.now(),
         });
 
         await commission.save();
-        await update_monthly_commission(commission);
+        return { result: true, message: "Commission correct!" }
+        // await update_monthly_commission(commission);
     }
     catch(error) {
-        return `Error creating commission record: ${error.message}`;
+        return await create_spif_commission_sales_agent(s_ag_id, refCount);
     }
 }
 
@@ -202,77 +176,7 @@ const update_monthly_commission = async (commission) => {
     
 }
 
-// Get all commissions
-router.get('/', async (req, res) => {
-    try {
-        const salesAgentCommissions = await commissionSalesAgentModel.find();
-        const phoneAgentCommissions = await commissionPhoneAgentModel.find();
-        res.json({salesAgentCommissions, phoneAgentCommissions});
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-});
 
-// Create new commission
-router.post('/', async (req, res) => {
-    const { agentType, agent_id, commission_type, amount, date, contractValue, namesCount, salesCount, saleValue, installationCompleted } = req.body;
-
-    // Calculate the commission based on the type
-    let calculatedAmount;
-    if (commission_type === 'spif') {
-        calculatedAmount = calculateSpifCommission(contractValue, namesCount);
-    } else if (commission_type === 'tiered') {
-        calculatedAmount = calculateTieredCommission(salesCount);
-    } else if (agentType === 'PhoneAgent') {
-        calculatedAmount = calculatePhoneAgentCommission(saleValue, installationCompleted);
-    }
-
-    let CommissionModel = agentType === 'SalesAgent' ? commissionSalesAgentModel : commissionPhoneAgentModel;
-    const newCommission = new CommissionModel({
-        agent_id,
-        commission_type,
-        amount: calculatedAmount,
-        date
-    });
-
-    try {
-        const savedCommission = await newCommission.save();
-        res.status(201).json(savedCommission);
-    } catch (err) {
-        res.status(400).json({ message: err.message });
-    }
-});
-
-// Approve commission
-router.patch('/:id', getCommission, async (req, res) => {
-    if (req.body.approved != null) {
-        res.commission.approved = req.body.approved;
-    }
-
-    try {
-        const updatedCommission = await res.commission.save();
-        res.json(updatedCommission);
-    } catch (err) {
-        res.status(400).json({ message: err.message });
-    }
-});
-
-async function getCommission(req, res, next) {
-    let commission;
-    try {
-        commission = await commissionSalesAgentModel.findById(req.params.id);
-        if (commission == null) {
-            commission = await commissionPhoneAgentModel.findById(req.params.id);
-        }
-        if (commission == null) {
-            return res.status(404).json({ message: 'Cannot find commission' });
-        }
-    } catch (err) {
-        return res.status(500).json({ message: err.message });
-    }
-
-    res.commission = commission;
-    next();
-}
-
-module.exports = router;
+module.exports = {
+    create_tiered_commission_sales_agent
+};

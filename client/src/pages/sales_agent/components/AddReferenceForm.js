@@ -11,7 +11,7 @@ const findDisabled = (referenceInfo)=>{
     return !(referenceInfo['name'] && referenceInfo['surname'] && referenceInfo['city'] && referenceInfo['address'] && referenceInfo['profession'] && referenceInfo['phone']);
 }
 
-function AddReferenceForm(){
+function AddReferenceForm({ showReference }){
     const initialState = {
         name: '',
         surname: '',
@@ -69,7 +69,10 @@ function AddReferenceForm(){
                 <FormControlLabel style={{marginLeft: "10px"}} control={<Checkbox  checked={referenceInfo.qualified} onChange={(event)=>handleChange("qualified", event.target.checked)}/>} label="Check if reference is qualified!" />
             </MDBox>
             <button className="confirmButton" disabled={findDisabled(referenceInfo)} onClick={()=>{
-                add_reference(notification, referenceInfo, clearForm);
+                add_reference(notification, referenceInfo, showReference ? ()=>{
+                    showReference(referenceInfo);
+                    clearForm();
+                } : clearForm);
             }}>Confirm</button>
         </div>
     );

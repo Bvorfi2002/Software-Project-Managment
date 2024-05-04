@@ -39,7 +39,7 @@ function MeetingsTable({ agent_id }) {
             ),
             outcome: <OutcomeCell outcome={meeting.meeting_outcome} />,
             actions: (
-                <MeetingDetailsModal selectedMeeting={meeting}/>
+                <MeetingDetailsModal selectedMeeting={meeting} dependency={setMeetingsUpdated}/>
             ),
         }
     });

@@ -10,6 +10,7 @@ const userRouter = require('./routers/user.js');
 const scheduleRouter = require("./routers/schedule.js");
 const referenceRouter = require("./routers/references.js");
 const meetingRouter = require('./routers/meetings.js');
+const commissionRouter = require('./routers/commission.js');
 const { add_meeting } = require('./controllers/meeting-manager');
 
 app.use(cors({
@@ -30,6 +31,7 @@ app.use('/user', userRouter);
 app.use('/schedule', scheduleRouter);
 app.use('/references', referenceRouter);
 app.use('/meeting', meetingRouter);
+app.use('/commission', commissionRouter);
 
 const options = {
     key: fs.readFileSync('./localhost.key'),

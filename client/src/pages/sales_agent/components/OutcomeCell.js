@@ -3,17 +3,17 @@ import MDButton from "../../../components/MDButton";
 import MDTypography from "../../../components/MDTypography";
 
 const outcome_to_color = {
-    'unsuccessful': 'error',
-    'successful': 'success',
+    'Unsuccessful': 'error',
+    'Successful': 'success',
     'Not Updated': 'warning',
-    'canceled': 'secondary'
+    'Agent Cancellation': 'secondary'
 }
 
 const outcome_to_text = {
-    'unsuccessful': 'Unsuccessful',
-    'successful': 'Successful',
+    'Unsuccessful': 'Unsuccessful',
+    'Successful': 'Successful',
     'Not Updated': 'Not updated',
-    'canceled': 'Canceled'
+    'Agent Cancellation': 'Canceled'
 }
 
 function OutcomeCell({outcome}){

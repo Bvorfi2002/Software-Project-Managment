@@ -4,7 +4,7 @@ const check_if_in_range = (dateToCheck) => {
     // const startDate = new Date();
     const startDate = new Date("2024-04-09");
     var endDate = new Date();
-    endDate.setDate(startDate.getDate() + 3);
+    endDate.setDate(startDate.getDate() + 2);
     endDate.setMonth(startDate.getMonth());
     return (dateToCheck >= startDate && dateToCheck <= endDate);
 }

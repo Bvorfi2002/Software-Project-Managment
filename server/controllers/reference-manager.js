@@ -10,17 +10,6 @@ const add_reference = async (new_reference)=>{
     return await ref.save();
 }
 
-const add_reference_with_commission = async (new_reference)=>{
-    const reference_exists = await check_reference_existence(new_reference.phone);
-    if(reference_exists)
-        return "Reference already exists!";
-    const ref = new Reference({
-        ...new_reference
-    });
-    await ref.save();
-    //some code for the update of commission will be here
-}
-
 const check_reference_existence = async (phone_number)=>{
     const reference_that_may_exist = await Reference.findOne({phone: phone_number});
     return reference_that_may_exist ? true : false;
@@ -89,7 +78,6 @@ const get_sales_agent_refernces_paged = async (start, end)=>{
 
 module.exports = {
     add_reference,
-    add_reference_with_commission,
     edit_reference,
     get_all_references,
     get_all_references_paged,

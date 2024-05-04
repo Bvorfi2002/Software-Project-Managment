@@ -4,36 +4,70 @@ import clsx from 'clsx';
 import { styled, css } from '@mui/system';
 import { Modal as BaseModal, Icon } from '@mui/material';
 import { Button } from '@mui/material';
+import MeetingDetails from './MeetingDetails';
+import AddMeetingReferences from './AddMeetingReferences';
+import Loading from '../../../components/Loading/loading';
+import { logMeeting } from "../scripts/meeting-scripts";
+import { useSnackbar } from "notistack";
 
-function MeetingDetailsModal({ selectedMeeting }) {
+function MeetingDetailsModal({ selectedMeeting, dependency }) {
 
     const [open, setOpen] = React.useState(false);
+    const [details, setDetails] = React.useState(true);
+    const [references, setReferences] = React.useState(false);
+    const [sale, setSales] = React.useState(false);
+    const [loading, setLoading] = React.useState(false);
     const handleOpen = () => {
         setOpen(true);
     };
     const handleClose = () => {
         setOpen(false);
     };
+    const triggerLoading = ()=>{
+      setLoading(true)
+    }
+    const stopLoading = ()=>{
+      setLoading(false);
+    }
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const notification = { add:enqueueSnackbar, close: closeSnackbar }
 
     return (
         <div>
             <TriggerButton onClick={handleOpen}>
                 <Icon color='secondary' fontSize='large' style={{marginRight: "5px"}}>read_more</Icon>
                 Details
-              </TriggerButton>
+            </TriggerButton>
             <Modal
                 open={open}
-                onClose={handleClose}
+                onClose={(references || sale) ? ()=>console.log("Can't close now") : handleClose}
                 aria-labelledby="parent-modal-title"
                 aria-describedby="parent-modal-description"
                 slots={{ backdrop: StyledBackdrop }}
             >
-                <ModalContent sx={style}>
-                    <h2 id="parent-modal-title" className="modal-title">
-                        Meeting details
-                    </h2>
-                    
-                </ModalContent>
+                {loading ? <Loading /> : <ModalContent sx={style}>
+                    {
+                    details && <MeetingDetails meeting={ selectedMeeting } dependency={(result)=>{
+                      triggerLoading();
+                      dependency(result)
+                      stopLoading();
+                      handleClose();
+                    }} proceedToSale={()=>{
+                      triggerLoading();
+                      setDetails(false);
+                      logMeeting(notification, ()=>dependency(true), {meetingId: selectedMeeting._id, newOutcome: "Successful"})
+                      setSales(true);
+                      stopLoading();
+                    }} proceedToReferences={()=>{
+                      triggerLoading();
+                      setDetails(false);
+                      logMeeting(notification, ()=>dependency(true), {meetingId: selectedMeeting._id, newOutcome: "Unsuccessful"})
+                      setReferences(true);
+                      stopLoading();
+                    }}/>
+                    }    
+                    {references && <AddMeetingReferences handleClose={handleClose} startLoading={triggerLoading} stopLoading={stopLoading}/>}               
+                </ModalContent>}
             </Modal>
         </div>
     );
@@ -138,13 +172,6 @@ const Backdrop = React.forwardRef((props, ref) => {
         color: ${theme.palette.mode === 'dark' ? grey[400] : grey[800]};
         margin-bottom: 4px;
       }
-    `,
-  );
-
-  const ModalHeader = styled('div')(
-    ({ theme }) => css`
-      width: 90%;
-
     `,
   );
 

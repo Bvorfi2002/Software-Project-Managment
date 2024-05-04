@@ -28,4 +28,15 @@ app.get('/meeting/add', async (req, res)=>{
     });
 })
 
+app.put("/cancel_meeting", async (req, res)=>{
+    await tokenManager.authorize(req, res, async ()=>{
+        const response = await meetingManager.edit_meeting_status(req.body.meetingId, req.body.newOutcome);
+        if(response.result){
+            res.status(200).json(response.message)
+        } else {
+            res.status(503).json(response.message);
+        }
+    });
+})
+
 module.exports = app;
