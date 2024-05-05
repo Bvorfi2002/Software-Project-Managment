@@ -54,7 +54,9 @@ function MeetingsTable({ agent_id }) {
     const notification = {add: enqueueSnackbar, close: closeSnackbar}
 
     useEffect(()=>{
+        console.log("getting_meetings");
         get_meetings(notification, (data)=>{setMeetings(data)});
+        setMeetingsUpdated(false);
     }, [meetingsUpdated])
 
     return (

@@ -1,4 +1,7 @@
 const Sale = require('../models/financial/sale');
+const Client = require('../models/contact/client.js');
+const Reference = require('../models/contact/reference.js');
+const debtManager = require('./debt-manager.js');
 
 // Get all sales
 const get_all_sales = async ()=>{
@@ -13,13 +16,26 @@ const get_all_sales = async ()=>{
     }
 }
 
+const get_client_from_ref = async (ref_id)=>{
+    const reference = await Reference.findById(ref_id);
+    const client = await Client.findOne({phone: reference.phone})
+    return client._id;
+}
+
 // Create new sale
-const create_new_sale = async (new_sale)=>{
-    const newSale = new Sale(...new_sale);
+const create_new_sale = async (new_sale, remain_amount, nr_of_months)=>{
+    const client_id = await get_client_from_ref(new_sale.client_id);
+    const newSale = new Sale({...new_sale, client_id: client_id});
     try {
         const savedSale = await newSale.save();
+        if(remain_amount > 0){
+            const payment = remain_amount / nr_of_months;
+            const debt = await debtManager.generate_debt(remain_amount, payment, newSale.client_id, newSale.s_ag_id, newSale.p_ag_id, nr_of_months)
+            await debt.save();
+        }
         return { result: true, message: "added successfully" }
     } catch (err) {
+        console.log(err);
         return { result: false, message: err.message}
     }
 }

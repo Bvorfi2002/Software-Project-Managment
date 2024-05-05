@@ -18,7 +18,8 @@ const change_state = async (s_ag_id, date, slot, new_state) => {
         const schedule = sales_agent.schedule;
         const new_schedule = schedule.map(day => {
             if (day.date.setHours(0, 0, 0, 0) === date.setHours(0, 0, 0, 0)){
-                day[slot] = new_state;
+                if(day[slot] === 'free' || day[slot] === 'scheduled')
+                    day[slot] = new_state;
             }
             return day;
         })

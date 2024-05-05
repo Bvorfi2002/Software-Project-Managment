@@ -9,7 +9,7 @@ const routes = [
   {
     type: "collapse",
     name: "Dashboard",
-    key: "dashboard",
+    key: "",
     icon: <Icon fontSize="small">dashboard</Icon>,
     route: "/",
     component: <SalesDashBoardContent />,

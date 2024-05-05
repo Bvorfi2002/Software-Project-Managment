@@ -11,7 +11,7 @@ function AddReferenceModal({open, handleClose, showReference}){
     const style = {
         backgroundColor: "white",
         width: "600px",
-        height: "500px",
+        height: "530px",
         margin: "auto auto",
         borderRadius: "10px"
     }

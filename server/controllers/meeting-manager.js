@@ -28,7 +28,7 @@ const retrieve_sales_agent_meetings = async (sales_agent_id) => {
         const meetings = await Meeting.find({ sales_agent: sales_agent_id });
         const meetingsWithReferences = await Promise.all(meetings.map(async (meeting) => {
             const reference = await retrieve_reference_of_meeting(meeting.referral);
-            return { _id: meeting._id, comments: reference.comments, profession: reference.profession, name: reference.name, surname: reference.surname, phone: reference.phone, address: reference.address, city: reference.city, date: meeting.date, time: meeting.time, meeting_outcome: meeting.outcome };
+            return { _id: meeting._id, ref_id: reference._id, p_ag_id: meeting.phone_agent, comments: reference.comments, profession: reference.profession, name: reference.name, surname: reference.surname, phone: reference.phone, address: reference.address, city: reference.city, date: meeting.date, time: meeting.time, meeting_outcome: meeting.outcome };
         }));
         return meetingsWithReferences;
     } catch(err) {

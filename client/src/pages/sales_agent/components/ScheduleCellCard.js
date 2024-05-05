@@ -15,7 +15,7 @@ const state_to_text = {
 
 function ScheduleCellCard({ state, modalOpen }){
     return (
-        <MDButton color={state_to_color[state]} onClick={modalOpen}>
+        <MDButton color={state_to_color[state]} onClick={(state === "free" || state==="scheduled") ? modalOpen : ()=>{}}>
             {state_to_text[state]}
         </MDButton>
     );

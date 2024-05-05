@@ -9,19 +9,23 @@ import AddMeetingReferences from './AddMeetingReferences';
 import Loading from '../../../components/Loading/loading';
 import { logMeeting } from "../scripts/meeting-scripts";
 import { useSnackbar } from "notistack";
+import SaleDetails from './SaleDetails';
 
 function MeetingDetailsModal({ selectedMeeting, dependency }) {
 
     const [open, setOpen] = React.useState(false);
     const [details, setDetails] = React.useState(true);
+    const [sale, setSale] = React.useState(false)
     const [references, setReferences] = React.useState(false);
-    const [sale, setSales] = React.useState(false);
     const [loading, setLoading] = React.useState(false);
     const handleOpen = () => {
         setOpen(true);
     };
     const handleClose = () => {
         setOpen(false);
+        setSale(false);
+        setReferences(false);
+        setDetails(true)
     };
     const triggerLoading = ()=>{
       setLoading(true)
@@ -40,7 +44,7 @@ function MeetingDetailsModal({ selectedMeeting, dependency }) {
             </TriggerButton>
             <Modal
                 open={open}
-                onClose={(references || sale) ? ()=>console.log("Can't close now") : handleClose}
+                onClose={references ? ()=>console.log("Can't close now") : handleClose}
                 aria-labelledby="parent-modal-title"
                 aria-describedby="parent-modal-description"
                 slots={{ backdrop: StyledBackdrop }}
@@ -56,7 +60,7 @@ function MeetingDetailsModal({ selectedMeeting, dependency }) {
                       triggerLoading();
                       setDetails(false);
                       logMeeting(notification, ()=>dependency(true), {meetingId: selectedMeeting._id, newOutcome: "Successful"})
-                      setSales(true);
+                      setSale(true);
                       stopLoading();
                     }} proceedToReferences={()=>{
                       triggerLoading();
@@ -66,7 +70,8 @@ function MeetingDetailsModal({ selectedMeeting, dependency }) {
                       stopLoading();
                     }}/>
                     }    
-                    {references && <AddMeetingReferences handleClose={handleClose} startLoading={triggerLoading} stopLoading={stopLoading}/>}               
+                    {references && <AddMeetingReferences handleClose={handleClose} startLoading={triggerLoading} stopLoading={stopLoading}/>}
+                    {sale && <SaleDetails ref_id={selectedMeeting.ref_id} p_ag_id={selectedMeeting.p_ag_id} handleClose={handleClose} />}            
                 </ModalContent>}
             </Modal>
         </div>

@@ -13,9 +13,6 @@ function AddMeetingReferences( { handleClose, startLoading, stopLoading }){
     const [references, setReferences] = useState([]);
     const [openForm, setOpenForm] = useState(false);
 
-    useEffect(()=>{
-        window.onbeforeunload = ()=>"If you leave this page, you'll also leave the call";
-    }, [])
     const rows = references.map(reference => {
         return {
             name: (
@@ -80,8 +77,8 @@ function AddMeetingReferences( { handleClose, startLoading, stopLoading }){
                             startLoading()
                             updateFailedMeetingCommission(references.length);
                             stopLoading()
-                            handleClose()
                         }
+                        handleClose()
                     }}>
                         <Icon color='white' fontSize='large' style={{ marginRight: "5px" }}>assignment_turned_in</Icon>
                         Finish meeting

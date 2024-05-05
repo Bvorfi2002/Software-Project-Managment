@@ -1,13 +1,14 @@
 const mongoose = require('mongoose');
 
 const debtSchema = new mongoose.Schema({
-    client_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Client' },
+    client_id: { type: mongoose.Schema.Types.ObjectId, ref: "Client" },
     amount: mongoose.Schema.Types.Decimal128,
     monthly_pay: mongoose.Schema.Types.Decimal128,
     next_date: Date,
     sales_agent_id: { type: mongoose.Schema.Types.ObjectId, ref: 'SalesAgent' },
     phone_agent_id: { type: mongoose.Schema.Types.ObjectId, ref: 'PhoneAgent' },
-    nr_months: Number
+    nr_months: Number,
+    confirmed: { type: Boolean, required: true, default: false }
 })
 
 debtSchema.methods.generateCollectionTask = ()=>{

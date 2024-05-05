@@ -9,7 +9,7 @@ const saleSchema = new mongoose.Schema({
     client_id: {type: mongoose.Schema.Types.ObjectId, required: true, ref: 'Client'},
     ref_count: {type: Number, required: true},
     approved: {type: Boolean, required: true},
-    contract_path: {type: String, required: true}
+    contract_path: { type: String }
 });
 
 const sale_model = mongoose.model('Sale', saleSchema);

@@ -3,7 +3,7 @@
 // instructions here. TODO: Adapt the method to the contract format
 const pdf = require("pdfkit");
 
-const generate_pdf = (header, body, footer)=>{
+const generate_pdf = (sales, res)=>{
     const doc = new pdf({ size: "A4" });
     const buffers = [];
 
@@ -19,7 +19,10 @@ const generate_pdf = (header, body, footer)=>{
       res.send(pdfData);
     });
 
-    doc.fontSize(25).text(header, 80, doc.y);
+    const body = "This is to verify that on " + sales.date.toString() + " _____________________" + "completed the transaction with Epoka Filters."
+    const footer = "Buyer: ______________________" + "                                   " + "Sales agent: _____________________________"
+
+    doc.fontSize(25).text("Sale contract", 80, doc.y);
     doc.moveDown();
     doc.fontSize(11).text(body, 80, doc.y);
     doc.moveDown(4);
@@ -28,4 +31,6 @@ const generate_pdf = (header, body, footer)=>{
     doc.end();
 }
 
-module.exports = generate_pdf;
+module.exports = {
+  generate_pdf
+};
