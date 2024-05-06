@@ -39,4 +39,16 @@ app.put("/cancel_meeting", async (req, res)=>{
     });
 })
 
+app.post("/add_instant_meeting", async (req, res)=>{
+    tokenManager.authorize(req, res, async ()=>{
+        const meetingInfo = req.body.meetingInfo;
+        const response = await meetingManager.add_instant_meeting({...meetingInfo, s_ag_id: tokenManager.retrieve_id(req)});
+        if(response.result){
+            res.status(200).json("Created successfully!");
+        } else {
+            res.status(503).json(response.message);
+        }
+    });
+})
+
 module.exports = app;

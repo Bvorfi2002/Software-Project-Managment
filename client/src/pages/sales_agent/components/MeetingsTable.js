@@ -8,6 +8,7 @@ import OutcomeCell from "./OutcomeCell";
 import MeetingDetailsModal from "./MeetingDetailsModal";
 import { get_meetings } from "../scripts/meeting-scripts";
 import {useSnackbar} from "notistack"
+import AddInstantMeetingModal from "./AddInstantMeetingModal";
 
 
 function MeetingsTable({ agent_id }) {
@@ -81,9 +82,7 @@ function MeetingsTable({ agent_id }) {
                         <Icon color="dark">tune</Icon>
                         {"Filter"}
                     </MDButton> 
-                    <MDButton color="light">
-                        {"Add instant meeting"}
-                    </MDButton>
+                    <AddInstantMeetingModal globalDependency={setMeetingsUpdated} />
                 </MDBox>
             </MDBox>
             <MDBox pt={3}>
