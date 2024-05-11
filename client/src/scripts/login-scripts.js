@@ -57,7 +57,7 @@ export const login = (loginInfo, notification, naviagtor, controlLoading) => {
                     localStorage.setItem('temp_role', data.role);
                     naviagtor('/otp-verification');
                 } else {
-                    naviagtor("/" + role_to_path[data.role]);
+                    naviagtor("/" + role_to_path[data.role] + "/dashboard");
                 }
             })
             .catch(error => {
@@ -88,7 +88,7 @@ export const otpVerification = (otp, notification, navigator, controlLoading) =>
                     localStorage.removeItem('temp_role');
                     localStorage.removeItem('temp_id');
                     console.log(role);
-                    navigator("/" + role_to_path[role]);
+                    navigator("/" + role_to_path[role] + "/dashboard");
                 } else if (response.status === 500) {
                     notification.add("OTP is expired", { variant: "error" });
                     setTimeout(notification.close, 4000);

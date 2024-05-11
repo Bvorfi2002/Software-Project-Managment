@@ -12,7 +12,9 @@ const referenceRouter = require("./routers/references.js");
 const meetingRouter = require('./routers/meetings.js');
 const commissionRouter = require('./routers/commission.js');
 const salesRouter = require('./routers/sales.js');
+const callRouter = require('./routers/calls.js')
 const { add_meeting } = require('./controllers/meeting-manager');
+const { create_reserved_call } = require("./controllers/call-manager.js");
 
 app.use(cors({
     origin: (origin, callback) => {
@@ -34,6 +36,7 @@ app.use('/references', referenceRouter);
 app.use('/meeting', meetingRouter);
 app.use('/commission', commissionRouter);
 app.use('/sales', salesRouter);
+app.use('/calls', callRouter);
 
 const options = {
     key: fs.readFileSync('./localhost.key'),
@@ -47,11 +50,10 @@ connectToDb((err) => {
     if (err) {
         console.log("Something went wrong with the server! Please try again later");
     } else {
+        // create_reserved_call({reference_id: '6638daba91806030125f8546', p_ag_id: '6632a87c267b01df9199cc16', reserved_date: new Date()});
+        // create_reserved_call({reference_id: '6638db3d91806030125f85a6', p_ag_id: '6632a87c267b01df9199cc16', reserved_date: new Date()});
+        // create_reserved_call({reference_id: '6638dc0f91806030125f85de', p_ag_id: '6632a87c267b01df9199cc16', reserved_date: new Date()});
         server.listen(port, () => {
-            // add_meeting('6632cffd46cbd7c8c244aa53', new Date("2024-04-15"), 'time_slot_3', '6614bc0d9a25cd1a6f5b747f', '6630bc406ce51fc72ec18eb1');
-            // add_meeting('66340801641a7d478b0a4cdd', new Date("2024-04-15"), 'time_slot_4', '6614bc0d9a25cd1a6f5b747f', '6630bc406ce51fc72ec18eb1');
-            // add_meeting('66340834641a7d478b0a4ce0', new Date("2024-04-15"), 'time_slot_5', '6614bc0d9a25cd1a6f5b747f', '6630bc406ce51fc72ec18eb1');
-            // add_meeting('66362b226a34cb43eb27c54a', new Date("2024-04-15"), 'time_slot_6', '6614bc0d9a25cd1a6f5b747f', '6630bc406ce51fc72ec18eb1');
             console.log(`Listening to HTTPS on port ${port}`);
         });
     }

@@ -21,7 +21,7 @@ function SalesAgentPage(){
     return (
       <Routes>
         {getRoutes(routes)}
-        <Route path="*" element={<Navigate to="/sales_agent/" />} />
+        <Route path="*" element={<Navigate to="/sales_agent/dashboard" />} />
       </Routes>
     );
 }

@@ -63,7 +63,7 @@ const serve_full_info_by_id = async (user_id) => {
 
 const first_degree_auth = async (username, password) => {
     const user = await retrieve_user_by_username(username);
-    if (Object.keys(user).length > 0) {
+    if (user) {
         const passwordVerification = security_ground.passwordVerifier(password, user.password);
         if (passwordVerification)
             return user.multifactor ? { result: true, code: 202, info: { id: user._id, email: user.email, role: user.kind } } : { result: true, user_info: { user_id: user._id, role: user.kind } }

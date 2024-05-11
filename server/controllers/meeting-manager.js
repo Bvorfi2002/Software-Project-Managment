@@ -28,7 +28,8 @@ const add_instant_meeting = async (meetingInformation) => {
             profession: meetingInformation.profession,
             phone: meetingInformation.phone,
             address: meetingInformation.address,
-            city: meetingInformation.city
+            city: meetingInformation.city,
+            called: True,
         });
         await refAdded.save();
         refAdded.toClient();

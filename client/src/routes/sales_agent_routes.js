@@ -9,9 +9,9 @@ const routes = [
   {
     type: "collapse",
     name: "Dashboard",
-    key: "",
+    key: "dashboard",
     icon: <Icon fontSize="small">dashboard</Icon>,
-    route: "/",
+    route: "/dashboard",
     component: <SalesDashBoardContent />,
   },
   {

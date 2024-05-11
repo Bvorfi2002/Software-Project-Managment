@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Icon } from "@mui/material";
 import MDBox from "../../../components/MDBox";
 import MDTypography from "../../../components/MDTypography";
@@ -6,66 +6,46 @@ import DataTable from "../../../components/Tables/DataTable";
 import MDInput from "../../../components/MDInput";
 import MDButton from "../../../components/MDButton";
 import CommentsModal from "./CommentsModal";
-
-function getRandomStatus() {
-    const statuses = ["failed", "re-scheduled", "successful"];
-    const randomIndex = Math.floor(Math.random() * statuses.length);
-    return statuses[randomIndex];
-}
-
-function generateRandomCalls() {
-    const calls = [];
-
-    for (let i = 0; i < 50; i++) {
-        const call = {
-            referenceName: "John",
-            referenceSurname: "Doe",
-            referencePhoneNumber: "+3556XXXXXXXX",
-            comments: "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.",
-            date: new Date()
-        };
-        calls.push(call);
-    }
-    return calls;
-}
+import {useSnackbar} from "notistack";
+import { get_reserved_calls } from "../scripts/call-scripts";
+import OutcomeModal from "./OutcomeModal";
 
 function ReservedCallsTable() {
 
-    const [calls, setCalls] = useState(generateRandomCalls());
+    const [calls, setCalls] = useState([]);
     const [activeCall, setActiveCall] = useState(null);
     const [open, setOpen] = useState(false);
+    const [callsUpdated, setCallsUpdated] = useState(false);
     const rows = calls.map(call => {
         return {
             name: (
                 <MDBox>
                     <MDTypography fontSize="13pt" fontWeight="bold">
-                        {call.referenceName + " " + call.referenceSurname}
+                        {call.name + " " + call.surname}
                     </MDTypography>
                 </MDBox>
             ),
             phone: (
                 <MDBox>
                     <MDTypography fontSize="8pt" fontWeight="light">
-                        {call.referencePhoneNumber}
+                        {call.phone}
                     </MDTypography>
                 </MDBox>
             ),
             date: (
                 <MDTypography variant="caption" color="text" fontWeight="medium">
-                    {call.date.toDateString()}
+                    {call.date.slice(0, 10)}
                 </MDTypography>
             ),
             actions: (
-                <MDBox>
+                <MDBox display="flex">
                     <MDButton color="light" style={{ marginRight: "5px" }} onClick={()=>{
                         setActiveCall(call);
                         setOpen(true);
                     }}>
                         <Icon>comment</Icon>
                     </MDButton>
-                    <MDButton color="light" style={{ width: "80px", fontSize: "8pt" }}>
-                        {"Call outcome"}
-                    </MDButton>
+                    <OutcomeModal call={call} dependency={setCallsUpdated} page={'reserved'}/>
                 </MDBox>
             ),
         }
@@ -76,6 +56,14 @@ function ReservedCallsTable() {
         { Header: 'Call date', accessor: 'date', align: 'center' },
         { Header: 'actions', accessor: 'actions', align: 'center' }
     ]
+    const {enqueueSnackbar, closeSnackbar} = useSnackbar();
+    const notification = {add: enqueueSnackbar, close: closeSnackbar};
+
+    useEffect(()=>{
+        console.log("getting calls");
+        get_reserved_calls(notification, setCalls);
+        setCallsUpdated(false);
+    }, [callsUpdated])
 
     return (
         <>
@@ -97,7 +85,7 @@ function ReservedCallsTable() {
                     justifyContent="space-between"
                 >
                     <MDTypography variant="h6" color="white">
-                        Call log
+                        Reserved calls
                     </MDTypography>
                     <MDBox pr={1}>
                         <MDInput label="Find call" nonTransparent={true} />

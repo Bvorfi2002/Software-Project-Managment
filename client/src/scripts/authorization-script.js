@@ -21,7 +21,7 @@ export const authorize = (navigator)=>{
         if(data){
             console.log(data);
             if(!window.location.pathname.includes(role_to_path[data]))
-                navigator('/' + role_to_path[data])
+                navigator('/' + role_to_path[data] + '/dashboard')
         } else {
             console.log("No data")
         }

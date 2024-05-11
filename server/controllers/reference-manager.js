@@ -63,7 +63,7 @@ const get_all_references = async ()=>{
 
 const get_sales_agent_references = async(s_ag_id)=>{
     const references = await Reference.find({added_by: s_ag_id});
-    return references;
+    return references; 
 }
 
 const get_all_references_paged = async (start, end)=>{
@@ -76,6 +76,15 @@ const get_sales_agent_refernces_paged = async (start, end)=>{
     return references.slice(start, end);
 }
 
+const get_all_uncalled_references = async ()=>{
+    try {
+        const references = await Reference.find({called: false});
+        return references;
+    } catch(err){
+        return "An unexpected error occurred";
+    }
+}
+
 module.exports = {
     add_reference,
     edit_reference,
@@ -85,5 +94,6 @@ module.exports = {
     delete_reference,
     get_sales_agent_references,
     get_sales_agent_refernces_paged,
-    edit_reference_phone_number
+    edit_reference_phone_number,
+    get_all_uncalled_references
 }

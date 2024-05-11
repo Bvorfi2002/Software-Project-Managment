@@ -1,50 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card } from "@mui/material";
 import MDBox from "../../../components/MDBox";
 import MDTypography from "../../../components/MDTypography";
 import DataTable from "../../../components/Tables/DataTable";
 import StatusCell from "../components/StatusCell";
 import MDInput from "../../../components/MDInput";
-
-function getRandomStatus() {
-    const statuses = ["failed", "re-scheduled", "successful"];
-    const randomIndex = Math.floor(Math.random() * statuses.length);
-    return statuses[randomIndex];
-}
-
-function generateRandomCalls() {
-    const calls = [];
-
-    for (let i = 0; i < 50; i++) {
-        const call = {
-            referenceName: "John",
-            referenceSurname: "Doe",
-            status: getRandomStatus(),
-            date: new Date()
-        };
-        calls.push(call);
-    }
-    return calls;
-}
+import { get_finishded_calls } from "../scripts/call-scripts";
+import { useSnackbar } from "notistack";
 
 function CallLogTable() {
 
-    const [calls, setCalls] = useState(generateRandomCalls());
+    const [calls, setCalls] = useState([]);
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const notification = {add: enqueueSnackbar, close: closeSnackbar};
     const rows = calls.map(call => {
         return {
             name: (
                 <MDBox>
                     <MDTypography fontSize="13pt" fontWeight="bold">
-                        {call.referenceName + " " + call.referenceSurname}
+                        {call.name + " " + call.surname}
                     </MDTypography>
                 </MDBox>
             ),
             status: (
-                <StatusCell status={call.status} />
+                <StatusCell status={call.outcome} />
             ),
             date: (
                 <MDTypography variant="caption" color="text" fontWeight="medium">
-                    {call.date.toDateString()}
+                    {call.date.slice(0, 10)}
                 </MDTypography>
             )
         }
@@ -54,6 +37,11 @@ function CallLogTable() {
         { Header: 'Call status', accessor: 'status', align: 'center' },
         { Header: 'Call date', accessor: 'date', align: 'center' },
     ]
+
+    useEffect(()=>{
+        console.log("Getting calls");
+        get_finishded_calls(notification, setCalls);
+    }, [])
 
     return (
         <Card>

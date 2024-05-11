@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DataTable from "../../../components/Tables/DataTable";
 import QualifiedCell from "./QualifiedCell";
 import MDButton from "../../../components/MDButton";
@@ -6,43 +6,15 @@ import MDBox from "../../../components/MDBox";
 import { Card, Icon } from "@mui/material";
 import MDTypography from "../../../components/MDTypography";
 import CommentsModal from "./CommentsModal";
-
-//This section simulates the requests
-function generateRandomString(length) {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let result = '';
-    for (let i = 0; i < length; i++) {
-        result += characters.charAt(Math.floor(Math.random() * characters.length));
-    }
-    return result;
-}
-
-// Function to generate a random reference
-function generateRandomReference() {
-    return {
-        name: generateRandomString(8),
-        surname: generateRandomString(8),
-        address: generateRandomString(10),
-        city: generateRandomString(6),
-        phoneNumber: generateRandomString(10),
-        comments: "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.",
-        qualified: Math.random() < 0.5// Randomly assign qualification status
-    };
-}
-
-// Function to generate an array of random references
-function generateRandomReferences(numReferences) {
-    const references = [];
-    for (let i = 0; i < numReferences; i++) {
-        references.push(generateRandomReference());
-    }
-    return references;
-}
+import { get_recent_references } from "../scripts/references-scripts";
+import { useSnackbar } from "notistack"
+import OutcomeModal from "./OutcomeModal";
 
 function ReferencesTable({ agent_id }) {
 
     const [open, setOpen] = useState(false);
-    const [references, setReferences] = useState(generateRandomReferences(10));
+    const [references, setReferences] = useState([]);
+    const [refUpdated, setRefUpdated] = useState(false);
     const [activeReference, setActiveReference] = useState(null);
     const rows = references.map(reference => {
         return {
@@ -56,7 +28,7 @@ function ReferencesTable({ agent_id }) {
             phoneNumber: (
                 <MDBox>
                     <MDTypography fontSize="8pt">
-                        {reference.phoneNumber}
+                        {reference.phone}
                     </MDTypography>
                 </MDBox>
             ),
@@ -69,16 +41,14 @@ function ReferencesTable({ agent_id }) {
             ),
             status: <QualifiedCell status={reference.qualified ? "qualified" : "unqualified"} />,
             actions: (
-                <MDBox>
+                <MDBox display="flex">
                     <MDButton color="light" style={{marginRight: "5px"}} onClick={()=>{
                         setActiveReference(reference);
                         setOpen(true)
                     }}>
                         <Icon>comment</Icon>
                     </MDButton>
-                    <MDButton color="light"  style={{width: "80px", fontSize: "8pt"}}>
-                        {"Call outcome"}
-                    </MDButton>
+                    <OutcomeModal dependency={setRefUpdated} reference={reference} page={'reference'}/>
                 </MDBox>
             ),
         }
@@ -90,6 +60,14 @@ function ReferencesTable({ agent_id }) {
         { Header: 'status', accessor: 'status', align: 'center' },
         { Header: 'actions', accessor: 'actions', align: 'center' }
     ]
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const notification = {add: enqueueSnackbar, close: closeSnackbar}
+
+    useEffect(()=>{
+        console.log("getting recent references")
+        get_recent_references(notification, setReferences);
+        setRefUpdated(false);
+    }, [refUpdated])
 
     return (
         <>

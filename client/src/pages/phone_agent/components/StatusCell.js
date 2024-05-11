@@ -2,9 +2,9 @@ import React from "react";
 import MDButton from "../../../components/MDButton";
 
 const status_to_color = {
-    're-scheduled': 'warning',
+    'rescheduled': 'warning',
     'successful': 'success',
-    'failed': 'error'
+    'excessive argument': 'error'
 }
 
 function StatusCell({status}){

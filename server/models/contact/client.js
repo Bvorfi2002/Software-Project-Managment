@@ -8,7 +8,7 @@ const clientSchema = new mongoose.Schema({
     profession: { type: String, required: true },
     comments: String,
     phone: { type: String, required: true },
-    scheduled: { type: Boolean, default: false },
+    scheduled: { type: Boolean, default: true },
     p_agent_id: { type: mongoose.Schema.Types.ObjectId, ref: 'PhoneAgent' },
     s_agent_id: { type: mongoose.Schema.Types.ObjectId, ref: 'SalesAgent' }
 })

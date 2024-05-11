@@ -1,4 +1,9 @@
 const { FinishedCall, ReservedCall, RedListCall } = require('../models/contact/call.js');
+const Reference = require('../models/contact/reference.js');
+const Client = require('../models/contact/client.js')
+const mongoose = require('mongoose');
+const Meeting = require('../models/contact/meeting.js');
+const meetingManager = require('../controllers/meeting-manager.js');
 
 const create_finished_call = async (call)=>{
     try {
@@ -6,6 +11,9 @@ const create_finished_call = async (call)=>{
             ...call
         });
         const savedCall = await finishedCall.save();
+        if(outcome === 'excessive argument')
+            await create_red_list_call({ date: call.date, reference_id: call.reference_id, p_ag_id: call.p_ag_id });
+        await Reference.findByIdAndUpdate(call.reference_id, {called: true});
         return { result: true, message: "created successfully" };
     } catch (error) {
         return {result: false, message: error.message }
@@ -18,10 +26,46 @@ const create_finished_call_by_reserved_call = async (reserved_call_id, outcome)=
         if (!reservedCall) {
             throw new Error('Reserved call not found');
         }
+        if(outcome === 'excessive argument')
+            await create_red_list_call_by_reserved(reserved_call_id);
         const finishedCall = await reservedCall.toFinished(outcome);
+        await Reference.findByIdAndUpdate(reservedCall.reference_id, {called: true});
         return { result: true, message: "created successfully" };
     } catch (error) {
-        return { result: true, message: error.message }
+        console.log(error);
+        return { result: false, message: error.message }
+    }
+}
+
+const reserved_call_to_meeting = async (reserved_call_id, p_ag_id, s_ag_id, date, time)=>{
+    const session = await mongoose.startSession();
+    try{
+        session.startTransaction();
+        const reservedCall = await ReservedCall.findById(reserved_call_id);
+        if (!reservedCall) {
+            throw new Error('Reserved call not found');
+        }
+        const finishedCall = await reservedCall.toFinished("successful");
+        const reference = await Reference.findByIdAndUpdate(reservedCall.reference_id, {called: true});
+        await meetingManager.add_meeting(reference._id, date, time, s_ag_id, p_ag_id);
+        session.endSession();
+        return { result: true, message: "created successfully" };
+    } catch(err){
+        console.log(err);
+        await session.abortTransaction();
+        return { result: false, message: err.message }
+    }
+}
+
+const reschedule_reserved_call = async (call_id, newDate)=>{
+    try {
+        const reservedCall = await ReservedCall.findById(call_id);
+        const newReservedCall = new ReservedCall({reference_id: reservedCall.reference_id, p_ag_id: reservedCall.p_ag_id, reserved_date: newDate});
+        await newReservedCall.save();
+        reservedCall.toFinished("rescheduled");
+        return { result: true, message: "rescheduling complete" }
+    } catch(error) {
+        return {result: false, message: "An unexpected error occurred"};
     }
 }
 
@@ -43,8 +87,9 @@ const create_reserved_call = async (call)=>{
             ...call
         });
         const savedCall = await reservedCall.save();
-        return { result: true, message: error.message };
+        return { result: true, message: "Created successfully!" };
     } catch (error) {
+        console.log(error)
         return { result: false, message: error.message }
     }
 }
@@ -55,7 +100,13 @@ const create_reserved_call_by_red_list = async (red_list_call_id)=>{
 }
 
 const get_reserved_calls = async (page_indexes)=>{
-    const reserved_calls = await ReservedCall.find({});
+    const reserved = await ReservedCall.find({});
+    if(!reserved.length)
+        return reserved;
+    const reserved_calls = await Promise.all(reserved.map(async (call) => {
+        const reference = await Reference.findById(call.reference_id);
+        return { _id: call._id, ref_id: reference._id, p_ag_id: call.p_ag_id, comments: reference.comments, profession: reference.profession, name: reference.name, surname: reference.surname, phone: reference.phone, address: reference.address, city: reference.city, date: call.reserved_date };
+    }));
     return page_indexes.length ? reserved_calls.slice(page_indexes[0], page_indexes[1]) : reserved_calls;
 }
 
@@ -67,7 +118,13 @@ const get_reserved_calls_by_interval = async (start_date, end_date, page_indexes
 }
 
 const get_reserved_calls_by_agent = async (agent_id, page_indexes)=>{
-    const reserved_calls = await ReservedCall.find({p_ag_id: agent_id});
+    const reserved = await ReservedCall.find({p_ag_id: agent_id});
+    if(!reserved.length)
+        return reserved;
+    const reserved_calls = await Promise.all(reserved.map(async (call) => {
+        const reference = await Reference.findById(call.reference_id);
+        return { _id: call._id, ref_id: reference._id, p_ag_id: call.p_ag_id, comments: reference.comments, profession: reference.profession, name: reference.name, surname: reference.surname, phone: reference.phone, address: reference.address, city: reference.city, date: call.reserved_date };
+    }));
     return page_indexes.length ? reserved_calls.slice(page_indexes[0], page_indexes[1]) : reserved_calls;
 }
 
@@ -80,7 +137,13 @@ const get_reserved_calls_by_agent_by_interval = async (agent_id, start_date, end
 }
 
 const get_finished_calls = async (page_indexes)=>{
-    const finished_calls = FinishedCall.find({});
+    const finished = FinishedCall.find({});
+    if(!finished.length)
+        return finished;
+    const finished_calls = await Promise.all(finished.map(async (call) => {
+        const reference = await Reference.findById(call.reference_id);
+        return { _id: call._id, ref_id: reference._id, p_ag_id: call.p_ag_id, comments: reference.comments, profession: reference.profession, name: reference.name, surname: reference.surname, phone: reference.phone, address: reference.address, city: reference.city, date: call.reserved_date };
+    }));
     return page_indexes.length ? finished_calls.slice(page_indexes[0], page_indexes[1]) : finished_calls;
 }
 
@@ -92,7 +155,13 @@ const get_finished_calls_by_interval = async (start_date, end_date, page_indexes
 }
 
 const get_finished_calls_by_agent = async (agent_id, page_indexes)=>{
-    const finished_calls = FinishedCall.find({p_ag_id: agent_id});
+    const finished = await FinishedCall.find({p_ag_id: agent_id});
+    if(!finished.length)
+        return finished;
+    const finished_calls = await Promise.all(finished.map(async (call) => {
+        const reference = await Reference.findById(call.reference_id);
+        return { _id: call._id, ref_id: reference._id, p_ag_id: call.p_ag_id, comments: reference.comments, profession: reference.profession, name: reference.name, surname: reference.surname, phone: reference.phone, address: reference.address, city: reference.city, date: call.date, outcome: call.outcome };
+    }));
     return page_indexes.length ? finished_calls.slice(page_indexes[0], page_indexes[1]) : finished_calls;
 }
 
@@ -129,6 +198,47 @@ const get_red_list_calls_by_agent_by_interval = async (agent_id, start_date, end
     return page_indexes.length ? red_list_calls.slice(page_indexes[0], page_indexes[1]) : red_list_calls;
 }
 
+const reference_to_meeting = async (reference_id, s_ag_id, p_ag_id, date, time)=>{
+    const session = await mongoose.startSession();
+    try {
+        session.startTransaction();
+        await create_finished_call({date: new Date(), outcome: "successful", reference_id: reference_id, p_ag_id: p_ag_id});
+        await meetingManager.add_meeting(reference_id, date, time, s_ag_id, p_ag_id);
+        const reference = await Reference.findByIdAndUpdate(reference_id, {called: true});
+        session.endSession();
+        return { result: true, message: "Added successfully!" }
+    } catch(err) {
+        console.log(err);
+        await session.abortTransaction();
+        return { result: false, message: err.message }
+    }
+}
+
+const reference_to_outcome = async (reference_id, p_ag_id, outcome)=>{
+    const session = await mongoose.startSession();
+    try {
+        session.startTransaction();
+        await create_finished_call({date: new Date(), outcome: outcome, reference_id: reference_id, p_ag_id: p_ag_id});
+        const reference = await Reference.findByIdAndUpdate(reference_id, {called: true});
+        session.endSession();
+        return { result: true, message: "Added successfully!" }
+    } catch(err) {
+        await session.abortTransaction();
+        return { result: false, message: err.message }
+    }
+}
+
+const reference_to_reschedule = async (reference_id, p_ag_id, newDate)=>{
+    try {
+        const newReservedCall = new ReservedCall({reference_id: reference_id, p_ag_id: p_ag_id, reserved_date: newDate});
+        await newReservedCall.save();
+        await Reference.findByIdAndUpdate(reference_id, {called: true});
+        return { result: true, message: "rescheduling complete" }
+    } catch(error) {
+        return {result: false, message: "An unexpected error occurred"};
+    }
+}
+
 module.exports = {
     create_finished_call,
     create_finished_call_by_reserved_call,
@@ -147,5 +257,10 @@ module.exports = {
     get_red_list_calls,
     get_red_list_calls_by_agent,
     get_red_list_calls_by_agent_by_interval,
-    get_red_list_calls_by_interval
+    get_red_list_calls_by_interval,
+    reserved_call_to_meeting,
+    reschedule_reserved_call,
+    reference_to_meeting,
+    reference_to_outcome,
+    reference_to_reschedule
 }

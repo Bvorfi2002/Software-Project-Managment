@@ -92,4 +92,15 @@ app.get('/retrieve/:id', async (req, res)=>{
     })
 });
 
+app.get('/latest_references', async (req, res)=>{
+    await tokenManager.authorize(req, res, async ()=>{
+        const references = await referenceManager.get_all_uncalled_references();
+        if(typeof(references) === 'string'){
+            res.status(503).json(references);
+        } else {
+            res.status(200).json(references)
+        }
+    })
+})
+
 module.exports = app;

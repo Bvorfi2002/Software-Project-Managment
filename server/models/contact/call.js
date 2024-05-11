@@ -4,7 +4,7 @@ const finishedCallSchema = new mongoose.Schema({
     date: {type: Date, default: ()=>new Date()},
     outcome: {
         type: String,
-        enum: ['no answer', 'another outcome', 'excessive argument', 'successful'],
+        enum: ['no answer', 'another outcome', 'excessive argument', 'successful', 'rescheduled'],
         default: 'no answer'
     },
     reference_id: {type: mongoose.Schema.Types.ObjectId, ref: 'Reference'},
@@ -24,16 +24,17 @@ const reservedCallSchema = new mongoose.Schema({
     p_ag_id: {type: mongoose.Schema.Types.ObjectId, ref: 'PhoneAgent'}
 })
 
-reservedCallSchema.methods.toFinished = async (outcome)=>{
+reservedCallSchema.methods.toFinished = async function (outcome){
     const finished_call = FinishedCall({
         outcome: outcome,
         reference_id: this.reference_id,
         p_ag_id: this.p_ag_id
     })
     await finished_call.save();
+    await this.deleteOne();
 }
 
-reservedCallSchema.methods.toRedList = async ()=>{
+reservedCallSchema.methods.toRedList = async function(){
     const red_list_call = RedListCall({
         reference_id: this.reference_id,
         p_ag_id: this.p_ag_id

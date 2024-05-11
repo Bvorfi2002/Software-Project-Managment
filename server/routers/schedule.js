@@ -43,4 +43,11 @@ app.put('/edit/marketing_manager/change_state', async (req, res)=>{
     })
 })
 
+app.put('/sales_agents_by_slot', async (req, res)=>{
+    await tokenManager.authorize(req, res, async ()=>{
+        const agents = await scheduleManager.find_sales_agents_by_schedule(new Date(req.body.date), req.body.time);
+        res.status(200).json(agents);
+    })
+})
+
 module.exports = app;
