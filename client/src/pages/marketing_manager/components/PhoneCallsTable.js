@@ -1,57 +1,22 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DataTable from "../../../components/Tables/DataTable";
-import QualifiedCell from "./QualifiedCell";
-import MDButton from "../../../components/MDButton";
 import MDBox from "../../../components/MDBox";
 import { Card, Icon } from "@mui/material";
 import MDTypography from "../../../components/MDTypography";
-import EditReferenceModal from "./EditReferenceModal";
 import ConfirmationModal from "../../../components/ConfirmationModal/ConfirmationModal";
 import StatusCell from "./StatusCell";
+import { getAllCalls } from "../scripts/call-scripts";
+import { useSnackbar } from "notistack";
 
-//This section simulates the requests
-function generateRandomString(length) {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let result = '';
-    for (let i = 0; i < length; i++) {
-        result += characters.charAt(Math.floor(Math.random() * characters.length));
-    }
-    return result;
-}
 
-const statuses = ['no answer', 'another outcome', 'excessive argument', 'successful'];
+function PhoneCallsTable({  }) {
 
-// Function to generate a random reference
-function generateRandomReference() {
-    return {
-        name: generateRandomString(8),
-        surname: generateRandomString(8),
-        address: generateRandomString(10),
-        city: generateRandomString(6),
-        phoneNumber: generateRandomString(10),
-        comments: "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.",
-        outcome: statuses[Math.floor(Math.random() * 4)],
-        called: Math.random() < 0.5,
-        agent: "John Doe"
-    };
-}
-
-// Function to generate an array of random references
-function generateRandomReferences(numReferences) {
-    const references = [];
-    for (let i = 0; i < numReferences; i++) {
-        references.push(generateRandomReference());
-    }
-    return references;
-}
-
-function PhoneCallsTable({ agent_id }) {
-
-    const [open, setOpen] = useState(false);
     const [confirmationOpen, setConfirmationOpen] = useState(false);
-    const [references, setReferences] = useState(generateRandomReferences(10));
-    const [activeReference, setActiveReference] = useState(null);
+    const [references, setReferences] = useState([]);
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const notification = { add: enqueueSnackbar, close: closeSnackbar };
     const rows = references.map(reference => {
+        console.log(reference)
         return {
             reference: (
                 <MDBox>
@@ -63,7 +28,7 @@ function PhoneCallsTable({ agent_id }) {
             phoneNumber: (
                 <MDBox>
                     <MDTypography fontSize="8pt">
-                        {reference.phoneNumber}
+                        {reference.phone}
                     </MDTypography>
                 </MDBox>
             ),
@@ -92,6 +57,10 @@ function PhoneCallsTable({ agent_id }) {
         { Header: 'outcome', accessor: 'outcome', align: 'center'}
     ]
 
+    useEffect(()=>{
+        getAllCalls(notification, setReferences)
+    }, [])
+
     return (
         <>
             <ConfirmationModal open={confirmationOpen} handleClose={()=>setConfirmationOpen(false)}/>
@@ -111,9 +80,6 @@ function PhoneCallsTable({ agent_id }) {
                     <MDTypography variant="h6" color="white">
                         Calls
                     </MDTypography>
-                    <MDButton>
-                        Reserve a call
-                    </MDButton>
                 </MDBox>
                 <MDBox pt={3}>
                     <DataTable

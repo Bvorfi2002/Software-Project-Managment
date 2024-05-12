@@ -45,7 +45,7 @@ app.put('/edit/phone_number', async (req, res)=>{
     })
 })
 
-app.put('/delete', async (req, res)=>{
+app.delete('/delete', async (req, res)=>{
     await tokenManager.authorize(req, res, async ()=>{
         const ref_id = req.body.ref_id;
         const response = await referenceManager.delete_reference(ref_id);

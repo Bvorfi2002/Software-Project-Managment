@@ -83,6 +83,10 @@ const create_red_list_call_by_reserved = async (reserved_call_id)=>{
 
 const create_reserved_call = async (call)=>{
     try {
+        const mayExist = await ReservedCall.findOne({reference_id: call.reference_id});
+        if(mayExist){
+            throw new Error("This reference is already contacted!")
+        }
         const reservedCall = new ReservedCall({
             ...call
         });
@@ -91,6 +95,32 @@ const create_reserved_call = async (call)=>{
     } catch (error) {
         console.log(error)
         return { result: false, message: error.message }
+    }
+}
+
+const create_many_reserved_calls = async (references, call_details)=>{
+    try {
+        let calls = []
+        for(let i=0; i<references.length; i++){
+            calls.push({ ...call_details, reference_id: references[i] });
+        }
+        const results = await ReservedCall.insertMany(calls);
+        await RedListCall.deleteMany({ reference_id: { $in: references } });
+        return { result: true, message: "Calls scheduled" };
+    } catch(error) {
+        return { result: false, message: error.message };
+    }
+}
+
+const create_many_reserved_calls_from_redlist = async (redlistcalls, chosenDate)=>{
+    try {
+        const calls = await RedListCall.find({ _id: { $in: redlistcalls } });
+        for(let i=0; i<calls.length; i++)
+            await calls[i].toReserved(chosenDate);
+        return { result: true, message: "Reserved successfully" };
+    } catch(error) {
+        console.log(error);
+        return { result: false, message: "Could not reserve the calls!" };
     }
 }
 
@@ -137,7 +167,7 @@ const get_reserved_calls_by_agent_by_interval = async (agent_id, start_date, end
 }
 
 const get_finished_calls = async (page_indexes)=>{
-    const finished = FinishedCall.find({});
+    const finished = await FinishedCall.find({});
     if(!finished.length)
         return finished;
     const finished_calls = await Promise.all(finished.map(async (call) => {
@@ -159,7 +189,7 @@ const get_finished_calls_by_agent = async (agent_id, page_indexes)=>{
     if(!finished.length)
         return finished;
     const finished_calls = await Promise.all(finished.map(async (call) => {
-        const reference = await Reference.findById(call.reference_id);
+        const reference = await Reference.findById(call.reference_id); 
         return { _id: call._id, ref_id: reference._id, p_ag_id: call.p_ag_id, comments: reference.comments, profession: reference.profession, name: reference.name, surname: reference.surname, phone: reference.phone, address: reference.address, city: reference.city, date: call.date, outcome: call.outcome };
     }));
     return page_indexes.length ? finished_calls.slice(page_indexes[0], page_indexes[1]) : finished_calls;
@@ -174,7 +204,7 @@ const get_finished_calls_by_agent_by_interval = async (agent_id, start_date, end
 }
 
 const get_red_list_calls = async (page_indexes)=>{
-    const red_list_calls = await RedListCall.find({});
+    const red_list_calls = await RedListCall.find({}).populate('reference_id').populate('p_ag_id').exec();
     return page_indexes.length ? red_list_calls.slice(page_indexes[0], page_indexes[1]) : red_list_calls;
 }
 
@@ -262,5 +292,7 @@ module.exports = {
     reschedule_reserved_call,
     reference_to_meeting,
     reference_to_outcome,
-    reference_to_reschedule
+    reference_to_reschedule,
+    create_many_reserved_calls,
+    create_many_reserved_calls_from_redlist
 }

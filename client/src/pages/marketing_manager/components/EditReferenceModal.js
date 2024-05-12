@@ -6,7 +6,7 @@ import MDBox from "../../../components/MDBox";
 import MDTypography from "../../../components/MDTypography";
 import EditReferenceForm from "./EditReferenceForm";
 
-function EditReferenceModal({ reference, open, handleClose }) {
+function EditReferenceModal({ reference, open, handleClose, dependency }) {
 
     const style = {
         backgroundColor: "white",
@@ -43,7 +43,7 @@ function EditReferenceModal({ reference, open, handleClose }) {
                             Edit reference
                         </MDTypography>
                     </MDBox>
-                    <EditReferenceForm reference={reference}/>
+                    <EditReferenceForm reference={reference} dependency={dependency} handleClose={handleClose}/>
                 </Box>
             </Fade>
         </Modal>

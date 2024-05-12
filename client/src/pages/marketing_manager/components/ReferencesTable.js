@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DataTable from "../../../components/Tables/DataTable";
 import QualifiedCell from "./QualifiedCell";
 import MDButton from "../../../components/MDButton";
@@ -7,48 +7,41 @@ import { Card, Icon } from "@mui/material";
 import MDTypography from "../../../components/MDTypography";
 import EditReferenceModal from "./EditReferenceModal";
 import ConfirmationModal from "../../../components/ConfirmationModal/ConfirmationModal";
+import Checkbox from '@mui/material/Checkbox';
+import { getReferences } from "../scripts/reference-scripts";
+import { useSnackbar } from "notistack"
+import { deleteReference } from "../scripts/reference-scripts";
+import ReserveCallModal from "./ReserveCallModal";
 
-//This section simulates the requests
-function generateRandomString(length) {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let result = '';
-    for (let i = 0; i < length; i++) {
-        result += characters.charAt(Math.floor(Math.random() * characters.length));
-    }
-    return result;
-}
-
-// Function to generate a random reference
-function generateRandomReference() {
-    return {
-        name: generateRandomString(8),
-        surname: generateRandomString(8),
-        address: generateRandomString(10),
-        city: generateRandomString(6),
-        phoneNumber: generateRandomString(10),
-        comments: "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.",
-        qualified: Math.random() < 0.5,// Randomly assign qualification status
-        called: Math.random() < 0.5
-    };
-}
-
-// Function to generate an array of random references
-function generateRandomReferences(numReferences) {
-    const references = [];
-    for (let i = 0; i < numReferences; i++) {
-        references.push(generateRandomReference());
-    }
-    return references;
-}
+const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
 function ReferencesTable({ agent_id }) {
 
     const [open, setOpen] = useState(false);
     const [confirmationOpen, setConfirmationOpen] = useState(false);
-    const [references, setReferences] = useState(generateRandomReferences(10));
+    const [references, setReferences] = useState([]);
+    const [referencesUpdated, setReferencesUpdated] = useState(false);
     const [activeReference, setActiveReference] = useState(null);
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const [chosenReferences, setChosenReferences] = useState([]);
+    const notification = { add: enqueueSnackbar, close: closeSnackbar }
     const rows = references.map(reference => {
         return {
+            checkbox: (
+                <MDBox maxWidth="30px">
+                  <Checkbox {...label} disabled={reference.scheduled} onChange={(event)=>{
+                    if(reference.scheduled)
+                            return;
+                    if(event.target.checked){
+                        const array = [...chosenReferences, reference._id]
+                        setChosenReferences(array);
+                    } else {
+                        const array = chosenReferences.filter(item => item !== reference._id);
+                        setChosenReferences(array);
+                    }
+                  }}/>
+                </MDBox>
+              ),
             reference: (
                 <MDBox>
                     <MDTypography fontSize="8pt" fontWeight="bold">
@@ -59,7 +52,7 @@ function ReferencesTable({ agent_id }) {
             phoneNumber: (
                 <MDBox>
                     <MDTypography fontSize="8pt">
-                        {reference.phoneNumber}
+                        {reference.phone}
                     </MDTypography>
                 </MDBox>
             ),
@@ -76,6 +69,7 @@ function ReferencesTable({ agent_id }) {
                     {reference.called ? <Icon color="success" fontSize="15pt">how_to_reg</Icon> : <Icon color="error" fontSize="15pt">close</Icon>}
                 </>
             ),
+            scheduled: <MDTypography>{reference.scheduled ? "YES" : "NO"}</MDTypography>,
             actions: (
                 <MDBox>
                     <MDButton color="light" style={{ marginRight: "5px" }} onClick={() => {
@@ -84,31 +78,39 @@ function ReferencesTable({ agent_id }) {
                     }}>
                         <Icon>edit</Icon>
                     </MDButton>
-                    <MDButton color="light" style={{ fontSize: "8pt" }} onClick={()=>{
-                        setConfirmationOpen(true);
-                    }}>
-                        <Icon>delete</Icon>
-                    </MDButton>
                 </MDBox>
             ),
         }
     });
     const columns = [
+        { Header: "", accessor: "checkbox", align: "left", width: "10px"},
         { Header: "reference", accessor: 'reference', align: 'left' },
         { Header: 'phone number', accessor: 'phoneNumber', align: 'center' },
         { Header: 'address', accessor: 'address', align: 'center' },
         { Header: 'status', accessor: 'status', align: 'center' },
         { Header: 'contact status', accessor: 'contact_status', align: 'center' },
+        { Header: 'scheduled for call', accessor: 'scheduled', align: 'center' },
         { Header: 'actions', accessor: 'actions', align: 'center' }
     ]
+
+    useEffect(()=>{
+        getReferences(notification, setReferences);
+        setReferencesUpdated(false);
+    }, [referencesUpdated])
 
     return (
         <>
             <EditReferenceModal reference={activeReference} open={open} handleClose={() => {
                 setOpen(false);
                 setActiveReference(null);
-            }} />
-            <ConfirmationModal open={confirmationOpen} handleClose={()=>setConfirmationOpen(false)}/>
+            }} dependency={setReferencesUpdated}/>
+            <ConfirmationModal open={confirmationOpen} handleClose={()=>{setActiveReference(null); setConfirmationOpen(false)}} confirmationAction={()=>{
+                deleteReference(notification, activeReference._id, (booleanValue) => {
+                    setReferencesUpdated(booleanValue);
+                    setActiveReference(null);
+                    setConfirmationOpen(false)
+                });
+            }}/>
             <Card>
                 <MDBox
                     mx={2}
@@ -125,6 +127,7 @@ function ReferencesTable({ agent_id }) {
                     <MDTypography variant="h6" color="white">
                         References
                     </MDTypography>
+                    <ReserveCallModal chosenReferences={chosenReferences}></ReserveCallModal>
                 </MDBox>
                 <MDBox pt={3}>
                     <DataTable

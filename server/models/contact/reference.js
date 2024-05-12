@@ -12,9 +12,10 @@ const referenceSchema = new mongoose.Schema({
     comments: String,
     qualified: { type: Boolean, default: false },
     referralName: { type: String, required: false },
-    phone: { type: String, required: true },
+    phone: { type: String, required: true, unique: true },
     called: {type: Boolean, required: true, default: false},
-    added_by: { type: mongoose.Schema.Types.ObjectId, ref: "SalesAgent"}
+    added_by: { type: mongoose.Schema.Types.ObjectId, ref: "SalesAgent"},
+    client: { type: mongoose.Schema.Types.ObjectId, ref: 'Client', required: false }
 });
 
 referenceSchema.methods.toClient = async function (sales_agent_id, p_agent_id){

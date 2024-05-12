@@ -19,15 +19,16 @@ const get_all_sales = async ()=>{
 const get_client_from_ref = async (ref_id)=>{
     const reference = await Reference.findById(ref_id);
     const client = await Client.findOne({phone: reference.phone})
-    return client._id;
+    return client;
 }
 
 // Create new sale
 const create_new_sale = async (new_sale, remain_amount, nr_of_months)=>{
-    const client_id = await get_client_from_ref(new_sale.client_id);
-    const newSale = new Sale({...new_sale, client_id: client_id});
+    const client = await get_client_from_ref(new_sale.client_id);
+    const newSale = new Sale({...new_sale, client_id: client._id});
     try {
         const savedSale = await newSale.save();
+        await client.toBuyer();
         if(remain_amount > 0){
             const payment = remain_amount / nr_of_months;
             const debt = await debtManager.generate_debt(remain_amount, payment, newSale.client_id, newSale.s_ag_id, newSale.p_ag_id, nr_of_months)

@@ -1,4 +1,5 @@
 const Reference = require('../models/contact/reference.js');
+const {ReservedCall} = require('../models/contact/call.js');
 
 const add_reference = async (new_reference)=>{
     const reference_exists = await check_reference_existence(new_reference.phone);
@@ -17,13 +18,14 @@ const check_reference_existence = async (phone_number)=>{
 
 const edit_reference = async (ref_id, new_info)=>{
     const response = {result: true, message: "Edited successfully!"};
-    Reference.findOneAndUpdate({_id: ref_id}, {...new_info}, (err)=>{
-        if(err){
-            response['result'] = false;
-            response['message'] = 'Unable to edit due to an error!';
-        }
-    })
-    return response;
+    try{
+        const updatedReference = await Reference.findOneAndUpdate({_id: ref_id}, {...new_info});
+        return response;
+    } catch(err){
+        response['message'] = err.message;
+        response['result'] = false;
+        return response
+    }
 }
 
 const edit_reference_phone_number = async (ref_id, new_phone_number)=>{
@@ -43,6 +45,10 @@ const delete_reference = async (ref_id) => {
         if (!ref) {
             throw new Error('Reference not found');
         }
+        const reservedCall = await ReservedCall.findOne({reference_id: ref_id});
+        if(reservedCall){
+            throw new Error('Reference is scheduled for contact so cannot be deleted!');
+        }
         await ref.deleteOne();
     } catch (error) {
         response['result'] = false;
@@ -58,7 +64,11 @@ const get_reference_by_id = async (ref_id)=>{
 
 const get_all_references = async ()=>{
     const references = await Reference.find({});
-    return references
+    const returnable = await Promise.all(references.map(async (reference) => {
+        const possibleCall = await ReservedCall.findOne({ reference_id: reference._id });
+        return { ...reference.toObject(), scheduled: possibleCall !== null };
+    }));
+    return returnable
 }
 
 const get_sales_agent_references = async(s_ag_id)=>{

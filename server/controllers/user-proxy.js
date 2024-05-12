@@ -122,6 +122,11 @@ const delete_user = async (user_id) => {
     await user.deleteOne();
 }
 
+const get_all_phone_agents = async ()=>{
+    const agents = await User.find({ kind: 'phone_agent'});
+    return agents;
+}
+
 module.exports = {
     generate_user,
     first_degree_auth,
@@ -131,5 +136,6 @@ module.exports = {
     delete_user,
     edit_user,
     update_password,
-    update_username
+    update_username,
+    get_all_phone_agents
 }

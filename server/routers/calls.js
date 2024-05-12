@@ -237,5 +237,27 @@ app.get('/red_list_call/agent/retrieve/interval', async (req, res)=>{
     })
 })
 
+app.post('/reserved/add-many', async (req, res)=>{
+    await tokenManager.authorize(req, res, async ()=>{
+        const date = new Date(req.body.callDetails.reserved_date)
+        const response = await callManager.create_many_reserved_calls(req.body.references, { ...req.body.callDetails, reserved_date: date });
+        if(response.result)
+            res.status(200).send('Added successfully!');
+        else
+            res.status(503).send("Could not perform this operation at this time!")
+    })
+})
+
+app.post('/reserved/add-from-red-list', async (req, res)=>{
+    await tokenManager.authorize(req, res, async ()=>{
+        const date = new Date(req.body.reserved_date)
+        const response = await callManager.create_many_reserved_calls_from_redlist(req.body.calls, date);
+        if(response.result)
+            res.status(200).send('Added successfully!');
+        else
+            res.status(503).send("Could not perform this operation at this time!")
+    })
+})
+
 
 module.exports = app;

@@ -15,3 +15,5 @@ After installing the openssl navigate to the server directory and apply the foll
 
 When applying these commands you will be asked some questions that are just a routine procedure and you don't need to worry too much about them. After finishing this procedure
 use "npm start" to start the server. To communicate with the server through the react app use the Firefox browser since Chrome has a problem with self signed certificates. 
+
+Command to start the react app in https: ($env:HTTPS = "true") -and (npm start)

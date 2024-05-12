@@ -4,6 +4,8 @@ import MDInput from "../../../components/MDInput";
 import { Icon } from "@mui/material";
 import MDTypography from "../../../components/MDTypography";
 import "../styles/input.css";
+import { editReference } from "../scripts/reference-scripts";
+import { useSnackbar } from "notistack";
 
 const disabled = (referenceInfo, reference) => {
 
@@ -22,7 +24,7 @@ const disabled = (referenceInfo, reference) => {
     )
 }
 
-function EditReferenceForm({ reference }) {
+function EditReferenceForm({ reference, dependency, handleClose }) {
 
     const [referenceInfo, setReferenceInfo] = useState(reference !== null ? { ...reference } : {})
     const handleChange = (propertyName, newValue) => {
@@ -30,6 +32,8 @@ function EditReferenceForm({ reference }) {
         newInfo[propertyName] = newValue;
         setReferenceInfo(newInfo);
     }
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const notification = { add: enqueueSnackbar, close: closeSnackbar }
 
     return (
         <div style={{ padding: "10px 0 0 15px", overflow: "scroll", maxHeight: "90%" }}>
@@ -137,7 +141,12 @@ function EditReferenceForm({ reference }) {
                     </div>
                 </MDBox>
             </MDBox>
-            <button className="confirmButton" disabled={disabled(referenceInfo, reference)}>Confirm</button>
+            <button className="confirmButton" disabled={disabled(referenceInfo, reference)} onClick={()=>{
+                editReference(notification, reference._id, referenceInfo, (boolValue)=>{
+                    dependency(boolValue);
+                    handleClose();
+                })
+            }}>Confirm</button>
         </div>
     );
 }
