@@ -1,0 +1,264 @@
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color:7B809A;
+    z-index: 1;
+}
+
+.left-panel {
+    width: 240px; /* Adjust width as needed */
+    height: 670px; /* Adjust height as needed */
+    position: absolute;
+    left: 30px; /* Adjust X position as needed */
+    top: 36px; /* Adjust Y position as needed */
+    background-color: #b1b1d1; /* Set the color */
+    border-radius: 32px; /* Set corner radius */
+    transform: rotate(-0.03deg); /* Apply rotation */
+    z-index: 2;
+}
+
+.ScheduleTable{
+
+    width: 260px; /* Adjust width as needed */
+    height: 117px; /* Adjust height as needed */
+    position: absolute;
+    left: 314px; /* Adjust X position as needed */
+    top: 150px; /* Adjust Y position as needed */
+    background-color: #b1b1d1; /* Set the color */
+    border-radius: 32px; /* Set corner radius */
+    transform: rotate(-0.03deg); /* Apply rotation */
+    z-index: 1;
+
+}
+
+.MeetingNR{
+
+    width: 260px; /* Adjust width as needed */
+    height: 117px; /* Adjust height as needed */
+    position: absolute;
+    left: 611px; /* Adjust X position as needed */
+    top: 150px; /* Adjust Y position as needed */
+    background-color: #b1b1d1; /* Set the color */
+    border-radius: 32px; /* Set corner radius */
+    transform: rotate(-0.03deg); /* Apply rotation */
+    z-index: 1;
+
+}
+
+.References{
+
+    width: 260px; /* Adjust width as needed */
+    height: 117px; /* Adjust height as needed */
+    position: absolute;
+    left: 908px; /* Adjust X position as needed */
+    top: 150px; /* Adjust Y position as needed */
+    background-color: #b1b1d1; /* Set the color */
+    border-radius: 32px; /* Set corner radius */
+    transform: rotate(-0.03deg); /* Apply rotation */
+    z-index: 1;
+
+}
+
+
+.WhiteLink{
+    width: 118px;
+    height: 118px;
+    top: 150px;
+    left: 908px;
+    border-radius: 32px;
+    background-color: rgb(40, 55, 151);
+    z-index: 3;
+}
+
+.preferences{
+
+position: absolute;
+left: 1080px;
+top: 150px;
+z-index: 3;
+}
+
+.green{
+
+    box-sizing: border-box;
+
+position: absolute;
+width: 70px;
+height: 71px;
+left: -260px;
+top: -35px;
+
+background: #55AE59;
+border: 1px solid rgba(123, 128, 154, 0.5);
+border-radius: 10px;
+
+z-index: 3;
+
+}
+
+
+.scheduleimg{
+    
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    top: 50%; /* Move the top edge of the element to the center of the parent container */
+    left: 50%; /* Move the left edge of the element to the center of the parent container */
+    transform: translate(-50%, -50%); /* Center the element precisely */
+    gap: 0px;
+    opacity: 0px;
+}
+.blue{
+
+    box-sizing: border-box;
+
+    position: absolute;
+    width: 70px;
+    height: 71px;
+    left: 295px;
+    top: 0px;
+     background: #429CF0;
+    border: 1px solid rgba(123, 128, 154, 0.5);
+    border-radius: 10px;
+    z-index: 3;
+}
+
+.meetingimg{
+     position: absolute;
+    width: 50px;
+    height: 50px;
+    top: 50%; /* Move the top edge of the element to the center of the parent container */
+    left: 50%; /* Move the left edge of the element to the center of the parent container */
+    transform: translate(-50%, -50%); /* Center the element precisely */
+    gap: 0px;
+    opacity: 0px;
+}
+
+/*
+.WhiteLink{
+
+    width: 30px;
+    height: 30px;
+}
+*/
+
+
+
+
+
+
+
+
+
+/*
+.Dashboard {
+    background-color: #1a1ab3;
+    color: white;
+    left: 180px;
+    top: 250px;
+
+}*/
+
+.Dashboard{
+   
+    position: relative;
+    top: 30px;
+    left: 20px;
+    width: 200px;
+    height: 43px;
+    border: none;
+    border-radius: 20px;
+    font-size: 16px;
+    font-family: 'Times New Roman', Times, serif; /*Font style*/
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    text-align: right;
+    padding-right: 30px;
+    color: blue; /* Change text color to blue */
+    background-color: white; 
+}
+
+
+
+.SalesManagement{
+
+    position: relative;
+        top: 50px;
+        left: 20px;
+        width: 200px;
+        height: 43px;
+        border: none;
+        border-radius: 20px;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: white;
+        background-color: rgb(127, 163, 255);
+        text-align: right;
+    padding-right: 30px;
+    }
+
+.MeetingOverview{
+    position: relative;
+    top: 70px;
+    left: 20px;
+    width: 200px;
+    height: 43px;
+    border: none;
+    border-radius: 20px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: white;
+    background-color: rgb(127,163, 255);
+    text-align: right;
+    padding-right: 30px;
+}
+
+.logo{
+    position:relative;
+    top: 10px;
+   left: 65px;
+   width: 103px;
+   height: 103px; 
+
+}
+
+
+.DashboardIcon{
+
+    width: 20px;
+    height: 20px;
+    background-position: left center;   
+    padding: 5px;
+
+
+}
+
+.SalesIcon{
+
+    width: 20px;
+    height: 20px;
+    background-position: left center;   
+    padding: 10px;
+    
+}
+
+.MeetingIcon{
+
+    width: 15px;
+    height: 15px;
+    background-position: left center;   
+    padding: 10px;
+
+
+}
