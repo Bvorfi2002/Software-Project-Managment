@@ -167,12 +167,12 @@ const get_reserved_calls_by_agent_by_interval = async (agent_id, start_date, end
 }
 
 const get_finished_calls = async (page_indexes)=>{
-    const finished = await FinishedCall.find({});
+    const finished = await FinishedCall.find({}).populate('p_ag_id');
     if(!finished.length)
         return finished;
     const finished_calls = await Promise.all(finished.map(async (call) => {
         const reference = await Reference.findById(call.reference_id);
-        return { _id: call._id, ref_id: reference._id, p_ag_id: call.p_ag_id, comments: reference.comments, profession: reference.profession, name: reference.name, surname: reference.surname, phone: reference.phone, address: reference.address, city: reference.city, date: call.reserved_date };
+        return { _id: call._id, ref_id: reference._id, phone_agent: call.p_ag_id.name + call.p_ag_id.surname, comments: reference.comments, profession: reference.profession, name: reference.name, surname: reference.surname, phone: reference.phone, address: reference.address, city: reference.city, date: call.date, outcome: call.outcome };
     }));
     return page_indexes.length ? finished_calls.slice(page_indexes[0], page_indexes[1]) : finished_calls;
 }

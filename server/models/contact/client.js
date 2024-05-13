@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Buyer = require('./buyer')
 
 const clientSchema = new mongoose.Schema({
     name: { type: String, required: true },
@@ -13,7 +14,7 @@ const clientSchema = new mongoose.Schema({
     s_agent_id: { type: mongoose.Schema.Types.ObjectId, ref: 'SalesAgent' }
 })
 
-clientSchema.methods.toRefusal = async ()=>{
+clientSchema.methods.toRefusal = async function(){
     const new_refusal = new Refusal({
         name: this.name,
         surname: this.surname,
@@ -28,7 +29,7 @@ clientSchema.methods.toRefusal = async ()=>{
     await new_refusal.save();
 }
 
-clientSchema.methods.toBuyer = async ()=>{
+clientSchema.methods.toBuyer = async function(){
     const new_buyer = new Buyer({
         name: this.name,
         surname: this.surname,

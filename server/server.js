@@ -12,8 +12,9 @@ const referenceRouter = require("./routers/references.js");
 const meetingRouter = require('./routers/meetings.js');
 const commissionRouter = require('./routers/commission.js');
 const salesRouter = require('./routers/sales.js');
-const callRouter = require('./routers/calls.js')
+const callRouter = require('./routers/calls.js');
 const agentRouter = require('./routers/agent.js');
+const buyerRouter = require('./routers/buyer.js');
 const { add_meeting } = require('./controllers/meeting-manager');
 const { create_reserved_call } = require("./controllers/call-manager.js");
 
@@ -39,6 +40,7 @@ app.use('/commission', commissionRouter);
 app.use('/sales', salesRouter);
 app.use('/calls', callRouter);
 app.use('/agents', agentRouter);
+app.use('/buyers', buyerRouter);
 
 const options = {
     key: fs.readFileSync('./localhost.key'),

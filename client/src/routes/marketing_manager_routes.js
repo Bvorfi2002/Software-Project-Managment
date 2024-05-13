@@ -3,6 +3,7 @@ import Test from "../components/test";
 import ReferenceOverviewContent from "../pages/marketing_manager/content/ReferenceOverviewContent";
 import RedListContent from "../pages/marketing_manager/content/RedListContent";
 import PhoneCallsContent from "../pages/marketing_manager/content/PhoneCallsContent";
+import BuyersContent from "../pages/marketing_manager/content/BuyersContent";
 
 const routes = [
   {
@@ -15,11 +16,11 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Buyers & References",
-    key: "buyers_n_references",
+    name: "Buyers",
+    key: "buyers",
     icon: <Icon fontSize="small">groups_3</Icon>,
-    route: "/buyers_n_references",
-    component: <Test />,
+    route: "/buyers",
+    component: <BuyersContent />,
   },
   {
     type: "collapse",

@@ -5,59 +5,49 @@ import { Card, Icon } from "@mui/material";
 import MDTypography from "../../../components/MDTypography";
 import ConfirmationModal from "../../../components/ConfirmationModal/ConfirmationModal";
 import StatusCell from "./StatusCell";
-import { getAllCalls } from "../scripts/call-scripts";
+import { getAllBuyers } from "../scripts/buyer-scripts";
 import { useSnackbar } from "notistack";
 
 
-function PhoneCallsTable({  }) {
+function BuyerTable({  }) {
 
     const [confirmationOpen, setConfirmationOpen] = useState(false);
-    const [references, setReferences] = useState([]);
+    const [buyers, setBuyers] = useState([]);
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const notification = { add: enqueueSnackbar, close: closeSnackbar };
-    const rows = references.map(reference => {
+    const rows = buyers.map(buyer => {
         return {
-            reference: (
+            buyer: (
                 <MDBox>
                     <MDTypography fontSize="8pt" fontWeight="bold">
-                        {reference.name + " " + reference.surname}
+                        {buyer.name + " " + buyer.surname}
                     </MDTypography>
                 </MDBox>
             ),
             phoneNumber: (
                 <MDBox>
                     <MDTypography fontSize="8pt">
-                        {reference.phone}
+                        {buyer.phone}
                     </MDTypography>
                 </MDBox>
             ),
             address: (
                 <MDBox>
                     <MDTypography fontSize="8pt">
-                        {reference.address + ", " + reference.city}
+                        {buyer.address + ", " + buyer.city}
                     </MDTypography>
                 </MDBox>
             ),
-            phone_agent: (
-                <MDBox>
-                    <MDTypography fontSize="8pt">
-                        {reference.phone_agent}
-                    </MDTypography>
-                </MDBox>
-            ),
-            outcome: <StatusCell status={reference.outcome}/>
         }
     });
     const columns = [
-        { Header: "reference", accessor: 'reference', align: 'left' },
+        { Header: "buyer", accessor: 'buyer', align: 'left' },
         { Header: 'phone number', accessor: 'phoneNumber', align: 'center' },
         { Header: 'address', accessor: 'address', align: 'center' },
-        { Header: 'phone agent', accessor: 'phone_agent', align: 'center'},
-        { Header: 'outcome', accessor: 'outcome', align: 'center'}
     ]
 
     useEffect(()=>{
-        getAllCalls(notification, setReferences)
+        getAllBuyers(notification, setBuyers)
     }, [])
 
     return (
@@ -77,7 +67,7 @@ function PhoneCallsTable({  }) {
                     justifyContent="space-between"
                 >
                     <MDTypography variant="h6" color="white">
-                        Calls
+                        Buyers
                     </MDTypography>
                 </MDBox>
                 <MDBox pt={3}>
@@ -94,4 +84,4 @@ function PhoneCallsTable({  }) {
     )
 }
 
-export default PhoneCallsTable;
+export default BuyerTable;

@@ -138,12 +138,11 @@ const get_refusals_by_sales_agent = async (agent_id) => {
 module.exports = {
     create_client,
     get_phone_agents_clients,
-    get_sales_agent_clients,
     get_all_buyers,
     get_all_client,
     get_all_refusals,
     get_buyers_by_phone_agent,
-    get_buyers_by_salse_agent,
+    get_buyers_by_sales_agent,
     get_refusals_by_phone_agent,
     get_refusals_by_sales_agent,
     // refusal_to_reference,
