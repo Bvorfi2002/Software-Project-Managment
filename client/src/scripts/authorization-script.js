@@ -3,7 +3,8 @@ const SERVER_URL = "https://localhost:5443"
 const role_to_path = {
     'SalesAgent': 'sales_agent',
     'phone_agent': 'phone_agent',
-    'marketing_manager': 'marketing_manager'
+    'marketing_manager': 'marketing_manager',
+    'chief': 'chief'
 }
 
 export const authorize = (navigator)=>{

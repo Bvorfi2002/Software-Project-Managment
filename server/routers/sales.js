@@ -68,8 +68,24 @@ app.post("/add_reference", async (req, res)=>{
 
 app.put("/confirm", async (req, res)=>{
     await tokenManager.authorize(req, res, async ()=>{
-        
+        const response = await salesManager.confirm_sale(req.body.saleId);
+        if(response.result){
+            res.status(200).json(response.message);
+        } else {
+            res.status(400).json(response.message);
+        }
     });
+})
+
+app.get('/retrieve', async (req, res)=>{
+    await tokenManager.authorize(req, res, async ()=>{
+        const response = await salesManager.get_all_sales();
+        if(response.result){
+            res.status(200).json(response.sales);
+        } else {
+            res.status(400).json(response.message);
+        }
+    })
 })
 
 module.exports = app;

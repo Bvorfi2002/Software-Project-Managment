@@ -15,8 +15,7 @@ const salesRouter = require('./routers/sales.js');
 const callRouter = require('./routers/calls.js');
 const agentRouter = require('./routers/agent.js');
 const buyerRouter = require('./routers/buyer.js');
-const { add_meeting } = require('./controllers/meeting-manager');
-const { create_reserved_call } = require("./controllers/call-manager.js");
+const { create_monthly_commission } = require('./controllers/commision-manager.js');
 
 app.use(cors({
     origin: (origin, callback) => {

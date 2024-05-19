@@ -30,7 +30,8 @@ const generateOtpString = (otp) => {
 const role_to_path = {
     'SalesAgent': 'sales_agent',
     'phone_agent': 'phone_agent',
-    'marketing_manager': 'marketing_manager'
+    'marketing_manager': 'marketing_manager',
+    'chief': 'chief'
 }
 
 export const login = (loginInfo, notification, naviagtor, controlLoading) => {
