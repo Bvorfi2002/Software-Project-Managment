@@ -56,9 +56,9 @@ const confirm_sale = async (sale_id) => {
   try {
     const sale = await Sale.findById(sale_id).exec();
     sale.set('approved', true);
+    await sale.save();
     await commissionManager.create_spif_commission_phone_agent(sale);
     await commissionManager.create_spif_commission_sales_agent(sale);
-    await sale.save();
     session.commitTransaction();
     session.endSession();
     return { result: true, message: "Approved successfully" };
@@ -82,9 +82,19 @@ async function getSale(sales_id) {
   }
 }
 
+const getSalesCountByMonth = async (agentId, month, year)=>{
+  try{
+    const nrOfSales = await Sale.countDocuments({ s_ag_id: agentId, date: { $gte: new Date(year,month,1), $lt: new Date(year, month, 30) }, approved: true});
+    return { result: true, count: nrOfSales };
+  } catch(error) {
+    return { result: false }
+  }
+}
+
 module.exports = {
   create_new_sale,
   getSale,
   get_all_sales,
   confirm_sale,
+  getSalesCountByMonth
 };

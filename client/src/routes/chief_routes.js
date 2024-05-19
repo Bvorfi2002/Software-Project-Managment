@@ -1,6 +1,7 @@
 import Icon from "@mui/material/Icon";
 import Test from "../components/test";
 import SalesContent from "../pages/chief/content/SalesContent";
+import CommissionContent from "../pages/chief/content/CommissionContent";
 
 const routes = [
   {
@@ -17,7 +18,7 @@ const routes = [
     key: "commissions",
     icon: <Icon fontSize="small">receipt_long</Icon>,
     route: "/commissions",
-    component: <Test />,
+    component: <CommissionContent />,
   },
   {
     type: "collapse",

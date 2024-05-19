@@ -47,7 +47,7 @@ const create_spif_commission_installation_phone_agent = async (id) => {
   });
 
   await commission.save();
-  await update_monthly_commission(commission);
+  await update_monthly_commission_phone(commission);
 };
 
 const create_spif_commission_sales_agent = async (sale) => {
@@ -138,25 +138,68 @@ const update_monthly_commission = async (commission) => {
   });
   const currentDate = new Date();
   const salesThisMonth = await Sale.countDocuments({
-    start_date: {
+    s_ag_id: commission.agent_id,
+    date: {
       $gte: new Date(currentDate.getFullYear(), currentDate.getMonth(), 1),
+      $lt: new Date(currentDate.getFullYear(), currentDate.getMonth(),  30)
     },
+    approved: true
   });
   let newAmount = commission.amount;
   if (salesThisMonth > 7) {
-    newAmount += salesThisMonth * 160;
+    newAmount = parseFloat(newAmount) + parseFloat(salesThisMonth * 160);
   } else if (salesThisMonth > 5) {
-    newAmount += salesThisMonth * 150;
+    newAmount = parseFloat(newAmount) + parseFloat(salesThisMonth * 150);
   } else {
-    newAmount += salesThisMonth * 140;
+    newAmount = parseFloat(newAmount) + parseFloat(salesThisMonth * 140);
   }
-  monthly_commission.amount = monthly_commission.amount + newAmount;
+  monthly_commission.amount = parseFloat(monthly_commission.amount) + parseFloat(newAmount);
   await monthly_commission.save();
 };
+
+const update_monthly_commission_phone = async (commission)=>{
+  const monthly_commission = await MonthlyCommission.findOne({
+    agent_id: commission.agent_id,
+  });
+  let newAmount = commission.amount;
+  monthly_commission.amount = parseFloat(monthly_commission.amount) + parseFloat(newAmount);
+  await monthly_commission.save();
+}
+
+const retrieve_monthly_commission = async (month, year)=>{
+  try{
+    const start_date = new Date(year, month, 1);
+    const monthlyCommissions = await MonthlyCommission.find({ start_date: { $gte: start_date } }).populate('agent_id');
+    return { result: true, commissions: monthlyCommissions }
+  } catch(error) {
+    return { result: false, message: error.message }
+  }
+}
+
+const retrieve_commissions_of_sales_agent = async (agentId, month, year)=>{
+  try{
+    const monthlyCommissions = await commissionSalesAgentModel.find({ agent_id: agentId, date: { $gte: new Date(year, month, 1), $lt: new Date(year, month, 30) }});
+    return { result: true, commissions: monthlyCommissions }
+  } catch(error) {
+    return { result: false, message: error.message }
+  }
+}
+
+const retrieve_commissions_of_phone_agent = async (agentId, month, year)=>{
+  try{
+    const monthlyCommissions = await commissionPhoneAgentModel.find({ agent_id: agentId, date: { $gte: new Date(year, month, 1), $lt: new Date(year, month, 30) }});
+    return { result: true, commissions: monthlyCommissions }
+  } catch(error) {
+    return { result: false, message: error.message }
+  }
+}
 
 module.exports = {
   create_spif_commission_phone_agent,
   create_tiered_commission_sales_agent,
   create_spif_commission_sales_agent,
-  create_monthly_commission
+  create_monthly_commission,
+  retrieve_commissions_of_sales_agent,
+  retrieve_monthly_commission,
+  retrieve_commissions_of_phone_agent
 };
