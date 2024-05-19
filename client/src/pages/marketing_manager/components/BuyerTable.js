@@ -7,6 +7,8 @@ import ConfirmationModal from "../../../components/ConfirmationModal/Confirmatio
 import StatusCell from "./StatusCell";
 import { getAllBuyers } from "../scripts/buyer-scripts";
 import { useSnackbar } from "notistack";
+import numeral from "numeral"
+import DebtModal from "./DebtModal";
 
 
 function BuyerTable({  }) {
@@ -41,9 +43,32 @@ function BuyerTable({  }) {
             upfront: (
                 <MDBox>
                     <MDTypography fontSize="8pt">
-                        {buyer.sale.amount}
+                        {numeral(buyer.sale.amount.$numberDecimal).format(Number.isInteger(buyer.sale.amount.$numberDecimal) ? '$0,0' : '$0,0.00')}
                     </MDTypography>
                 </MDBox>
+            ),
+            date: (
+                <MDBox>
+                    <MDTypography fontSize="8pt">
+                        {buyer.sale.date.slice(0, 10)}
+                    </MDTypography>
+                </MDBox>
+            ),
+            warranty: (
+                <MDBox color={buyer.warranty ? 'success' : 'error'}>
+                    {buyer.warranty ? "YES" : "NO"}
+                </MDBox>
+            ),
+            debt: (
+                <>
+                    {
+                        buyer.debt ?
+                        <DebtModal debt={buyer.debt} /> : 
+                        <MDTypography fontSize="8pt" fontWeight="bold">
+                            Not applicable
+                        </MDTypography>
+                    }
+                </>
             )
         }
     });
