@@ -29,7 +29,7 @@ clientSchema.methods.toRefusal = async function(){
     await new_refusal.save();
 }
 
-clientSchema.methods.toBuyer = async function(){
+clientSchema.methods.toBuyer = async function(sale_id, debt_id){
     const new_buyer = new Buyer({
         name: this.name,
         surname: this.surname,
@@ -39,7 +39,9 @@ clientSchema.methods.toBuyer = async function(){
         phone: this.phone,
         comments: this.comments,
         p_agent_id: this.p_agent_id,
-        s_agent_id: this.s_agent_id
+        s_agent_id: this.s_agent_id,
+        sale: sale_id,
+        debt: debt_id
     });
     await new_buyer.save();
 }

@@ -38,12 +38,23 @@ function BuyerTable({  }) {
                     </MDTypography>
                 </MDBox>
             ),
+            upfront: (
+                <MDBox>
+                    <MDTypography fontSize="8pt">
+                        {buyer.sale.amount}
+                    </MDTypography>
+                </MDBox>
+            )
         }
     });
     const columns = [
         { Header: "buyer", accessor: 'buyer', align: 'left' },
         { Header: 'phone number', accessor: 'phoneNumber', align: 'center' },
         { Header: 'address', accessor: 'address', align: 'center' },
+        { Header: 'money upfront', accessor: 'upfront', align: 'center' },
+        { Header: 'sale date', accessor: 'date', align: 'center' },
+        { Header: 'warranty', accessor: 'warranty', align: 'center' },
+        { Header: 'debt details', accessor: 'debt', align: 'center' },
     ]
 
     useEffect(()=>{

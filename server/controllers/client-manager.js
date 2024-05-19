@@ -77,7 +77,7 @@ const get_all_client = async () => {
 
 const get_all_buyers = async () => {
     try {
-        const buyers = await Buyer.find({});
+        const buyers = await Buyer.find({}).populate('sale').populate('debt');
         return buyers;
     } catch (error) {
         console.error('Error fetching all buyers:', error.message);

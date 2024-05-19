@@ -28,12 +28,14 @@ const create_new_sale = async (new_sale, remain_amount, nr_of_months)=>{
     const newSale = new Sale({...new_sale, client_id: client._id});
     try {
         const savedSale = await newSale.save();
-        await client.toBuyer();
+        let debt_id;
         if(remain_amount > 0){
             const payment = remain_amount / nr_of_months;
             const debt = await debtManager.generate_debt(remain_amount, payment, newSale.client_id, newSale.s_ag_id, newSale.p_ag_id, nr_of_months)
-            await debt.save();
+            const savedDebt = await debt.save();
+            debt_id = savedDebt._id;
         }
+        await client.toBuyer(savedSale._id, debt_id);
         return { result: true, message: "added successfully" }
     } catch (err) {
         console.log(err);
