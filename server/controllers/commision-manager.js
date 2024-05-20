@@ -197,6 +197,16 @@ const retrieve_commissions_of_phone_agent = async (agentId, month, year)=>{
   }
 }
 
+const release_commission = async (commissionId)=>{
+  try{
+    const commission = await MonthlyCommission.findById(commissionId);
+    await commission.releaseCommission();
+    return { result: true, message: "Commission released" }
+  } catch(error){
+    return { result: false, message: error.message }
+  }
+}
+
 module.exports = {
   create_spif_commission_phone_agent,
   create_tiered_commission_sales_agent,
@@ -204,5 +214,6 @@ module.exports = {
   create_monthly_commission,
   retrieve_commissions_of_sales_agent,
   retrieve_monthly_commission,
-  retrieve_commissions_of_phone_agent
+  retrieve_commissions_of_phone_agent,
+  release_commission
 };

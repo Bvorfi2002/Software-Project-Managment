@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const transaction = require('./transaction.js');
 
-const generate_transaction = (monthly_commission_amount)=>{
+const generate_transaction = async (monthly_commission_amount)=>{
     const new_transaction = new transaction({
         transaction_type: "commission_release",
         incoming: false,
@@ -20,9 +20,9 @@ const monthly_commission_schema = new mongoose.Schema({
     released: {type: Boolean, required: true, default: false}
 })
 
-monthly_commission_schema.methods.releaseCommission = async ()=>{
-    generate_transaction(this.amount);
-    const first_day = this.start_date;
+monthly_commission_schema.methods.releaseCommission = async function(){
+    await generate_transaction(this.amount);
+    const first_day = new Date(this.start_date);
     const last_day = new Date();
     if (last_day.getMonth() - first_day.getMonth() === 1){
         const model = this.constructor;

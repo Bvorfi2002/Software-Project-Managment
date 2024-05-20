@@ -79,7 +79,7 @@ function DebtTable({}) {
             setTimeout(notification.close, 3000);
         }}>
           <Icon style={{ marginRight: "5px" }}>task</Icon>
-          Create installation task
+          Collection task
         </MDButton>
       ),
     };

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"
 import DataTable from "../../../components/Tables/DataTable";
 import MDBox from "../../../components/MDBox";
 import MDButton from "../../../components/MDButton";
 import { Card, Icon } from "@mui/material";
 import MDTypography from "../../../components/MDTypography";
 import ConfirmationModal from "../../../components/ConfirmationModal/ConfirmationModal";
-import { getAllSales, confirmSale } from "../scripts/sales-scripts";
+import { releaseCommission } from "../scripts/commission-scripts";
 import { getMonthlyCommissions } from "../scripts/commission-scripts";
 import { useSnackbar } from "notistack";
 import numeral from "numeral";
@@ -21,6 +22,7 @@ function CommissionTable() {
   const [selectedCommission, setSelectedCommission] = useState("");
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const notification = { add: enqueueSnackbar, close: closeSnackbar };
+  const navigator = useNavigate();
   const rows = commisions.map((commision) => {
     return {
       agent: (
@@ -86,7 +88,7 @@ function CommissionTable() {
         open={confirmationOpen}
         handleClose={() => setConfirmationOpen(false)}
         confirmationAction={() => {
-          confirmSale(notification, selectedCommission, setCommissionUpdated);
+          releaseCommission(notification, navigator, selectedCommission, setCommissionUpdated);
         }}
       />
       <Card>

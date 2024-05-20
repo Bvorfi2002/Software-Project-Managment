@@ -16,6 +16,7 @@ const callRouter = require('./routers/calls.js');
 const agentRouter = require('./routers/agent.js');
 const buyerRouter = require('./routers/buyer.js');
 const debtRouter = require('./routers/debt.js');
+const inventoryRouter = require('./routers/inventory.js');
 
 app.use(cors({
     origin: (origin, callback) => {
@@ -41,6 +42,7 @@ app.use('/calls', callRouter);
 app.use('/agents', agentRouter);
 app.use('/buyers', buyerRouter);
 app.use('/debt', debtRouter);
+app.use('/inventory', inventoryRouter);
 
 const options = {
     key: fs.readFileSync('./localhost.key'),

@@ -52,4 +52,15 @@ app.put('/commission_details_sales_agent', async (req, res)=>{
     })
 })
 
+app.put('/release', async (req, res)=>{
+    await tokenManager.authorize(req, res, async ()=>{
+        const response = await commissionManager.release_commission(req.body.commissionId);
+        if(response.result){
+            res.status(200).json(response.message)
+        } else  {
+            res.status(400).json(response.message)
+        }
+    })
+})
+
 module.exports = app;
