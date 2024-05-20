@@ -86,7 +86,6 @@ function CommissionDetailsPhone({ agentId, month, year }) {
               width: "100%",
               display: "flex",
               flexDirection: "column",
-              justifyContent: "center",
               backgroundColor: "whitesmoke",
               borderRadius: "10px",
               padding: "0 10px 0 10px",

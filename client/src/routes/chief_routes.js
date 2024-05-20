@@ -2,6 +2,7 @@ import Icon from "@mui/material/Icon";
 import Test from "../components/test";
 import SalesContent from "../pages/chief/content/SalesContent";
 import CommissionContent from "../pages/chief/content/CommissionContent";
+import DebtContent from "../pages/chief/content/DebtContent";
 
 const routes = [
   {
@@ -34,7 +35,7 @@ const routes = [
     key: "debts",
     icon: <Icon fontSize="small">domain</Icon>,
     route: "/debts",
-    component: <Test />,
+    component: <DebtContent />,
   },
   {
     type: "collapse",

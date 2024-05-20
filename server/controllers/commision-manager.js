@@ -35,7 +35,7 @@ const create_spif_commission_phone_agent = async (sale) => {
   });
 
   await commission.save();
-  await update_monthly_commission(commission);
+  await update_monthly_commission_phone(commission);
 };
 
 const create_spif_commission_installation_phone_agent = async (id) => {
@@ -132,6 +132,16 @@ const create_monthly_commission = async (agentId) => {
   return await monthly_commission.save();
 };
 
+const findAmountBasedOnSales = (salesThisMonth)=>{
+  if (salesThisMonth > 7) {
+    return parseFloat(salesThisMonth * 160);
+  } else if (salesThisMonth > 5) {
+    return parseFloat(salesThisMonth * 150);
+  } else {
+    return parseFloat(salesThisMonth * 140);
+  }
+}
+
 const update_monthly_commission = async (commission) => {
   const monthly_commission = await MonthlyCommission.findOne({
     agent_id: commission.agent_id,
@@ -145,15 +155,8 @@ const update_monthly_commission = async (commission) => {
     },
     approved: true
   });
-  let newAmount = commission.amount;
-  if (salesThisMonth > 7) {
-    newAmount = parseFloat(newAmount) + parseFloat(salesThisMonth * 160);
-  } else if (salesThisMonth > 5) {
-    newAmount = parseFloat(newAmount) + parseFloat(salesThisMonth * 150);
-  } else {
-    newAmount = parseFloat(newAmount) + parseFloat(salesThisMonth * 140);
-  }
-  monthly_commission.amount = parseFloat(monthly_commission.amount) + parseFloat(newAmount);
+  let newAmount = parseFloat(commission.amount) + findAmountBasedOnSales(salesThisMonth);
+  monthly_commission.amount = parseFloat(monthly_commission.amount) + parseFloat(newAmount) - findAmountBasedOnSales(salesThisMonth - 1);
   await monthly_commission.save();
 };
 

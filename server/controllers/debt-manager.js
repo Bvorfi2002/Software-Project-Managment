@@ -28,7 +28,7 @@ const generate_debt_collection_task = async (debt_id, installer_id)=>{
 }
 
 const get_all_debts = async ()=>{
-    const debts = await Debt.find({});
+    const debts = await Debt.find({}).populate('client_id').populate('sales_agent_id').populate('phone_agent_id');
     return debts;
 }
 

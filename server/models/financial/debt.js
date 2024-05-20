@@ -5,8 +5,8 @@ const debtSchema = new mongoose.Schema({
     amount: mongoose.Schema.Types.Decimal128,
     monthly_pay: mongoose.Schema.Types.Decimal128,
     next_date: Date,
-    sales_agent_id: { type: mongoose.Schema.Types.ObjectId, ref: 'SalesAgent' },
-    phone_agent_id: { type: mongoose.Schema.Types.ObjectId, ref: 'PhoneAgent' },
+    sales_agent_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    phone_agent_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     nr_months: Number,
     confirmed: { type: Boolean, required: true, default: false }
 })

@@ -15,7 +15,7 @@ const salesRouter = require('./routers/sales.js');
 const callRouter = require('./routers/calls.js');
 const agentRouter = require('./routers/agent.js');
 const buyerRouter = require('./routers/buyer.js');
-const { create_monthly_commission } = require('./controllers/commision-manager.js');
+const debtRouter = require('./routers/debt.js');
 
 app.use(cors({
     origin: (origin, callback) => {
@@ -40,6 +40,7 @@ app.use('/sales', salesRouter);
 app.use('/calls', callRouter);
 app.use('/agents', agentRouter);
 app.use('/buyers', buyerRouter);
+app.use('/debt', debtRouter);
 
 const options = {
     key: fs.readFileSync('./localhost.key'),
