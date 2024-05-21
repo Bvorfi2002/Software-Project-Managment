@@ -103,7 +103,7 @@ export const addItem = (notification, navigator, item, dependency)=>{
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(item),
+        body: JSON.stringify({item}),
         credentials: "include"
     })
         .then(response => {

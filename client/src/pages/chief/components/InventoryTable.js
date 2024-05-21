@@ -12,6 +12,7 @@ import { getAllItems } from "../scripts/inventory-scripts"
 
 function InventoryTable({}) {
   const [items, setItems] = useState([]);
+  const [itemsUpdated, setItemsUpdated] = useState(false);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const notification = { add: enqueueSnackbar, close: closeSnackbar };
   const navigator = useNavigate();
@@ -19,7 +20,7 @@ function InventoryTable({}) {
     return {
       nr: (
         <MDTypography style={{fontSize: "8pt"}}>
-          {index}
+          {index + 1}
         </MDTypography>
       ),
       name: (
@@ -34,7 +35,7 @@ function InventoryTable({}) {
       ),
       price: (
         <MDTypography style={{fontSize: "8pt"}}>
-          {item.itemBuyingPrice}
+          {item.itemBuyingPrice.$numberDecimal}
         </MDTypography>
       ),
       actions: (
@@ -54,7 +55,8 @@ function InventoryTable({}) {
 
   useEffect(() => {
     getAllItems(notification, navigator, setItems);
-  }, []);
+    setItemsUpdated(false);
+  }, [itemsUpdated]);
 
   return (
     <>
@@ -79,7 +81,7 @@ function InventoryTable({}) {
                 notification.add("We are working to bring this feature to you!", { variant: "info" });
                 setTimeout(notification.close, 3000);
             }}>Requests</MDButton>
-            <AddItemModal />
+            <AddItemModal dependency={setItemsUpdated}/>
           </div>
         </MDBox>
         <MDBox pt={3}>
