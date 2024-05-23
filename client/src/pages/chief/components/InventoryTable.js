@@ -8,7 +8,9 @@ import MDTypography from "../../../components/MDTypography";
 import { useSnackbar } from "notistack";
 import numeral from "numeral";
 import AddItemModal from "./AddItemModal";
-import { getAllItems } from "../scripts/inventory-scripts"
+import { deleteItem, getAllItems } from "../scripts/inventory-scripts"
+import EditItemModal from "./EditItemModal";
+import AddQuantityModal from "./AddQuantityModal";
 
 function InventoryTable({}) {
   const [items, setItems] = useState([]);
@@ -40,7 +42,13 @@ function InventoryTable({}) {
       ),
       actions: (
         <MDBox>
-
+          <EditItemModal selectedItem={item} dependency={setItemsUpdated}/>
+          <MDButton color="error" onClick={()=>{
+            deleteItem(notification, navigator, item._id, setItemsUpdated)
+          }}>
+            <Icon>delete</Icon>
+          </MDButton>
+          <AddQuantityModal selectedItem={item} dependency={setItemsUpdated}/>
         </MDBox>
       )
     };

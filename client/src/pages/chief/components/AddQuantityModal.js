@@ -15,7 +15,7 @@ import {
   numberInputClasses,
 } from '@mui/base/Unstable_NumberInput';
 import MDButton from "../../../components/MDButton";
-import { addItem } from "../scripts/inventory-scripts";
+import { addQuantity } from "../scripts/inventory-scripts";
 
 const CustomNumberInput = React.forwardRef(function CustomNumberInput(value, onChange , ref) {
   return (
@@ -44,37 +44,16 @@ const CustomNumberInput = React.forwardRef(function CustomNumberInput(value, onC
 });
 
 
-function AddItemModal({ dependency }){
+function AddQuantityModal({ selectedItem, dependency }){
 
     const [open, setOpen] = useState(false);
-    const initialState = {
-      itemName: '',
-      itemBuyingPrice: 0,
-      itemStockAlert: 0
-    }
-    const [item, setItem] = useState({ ...initialState })
-    const onChangeName = (event)=>{
-      const newValue = { ...item, itemName: event.target.value };
-      setItem(newValue);
-    }
-    const onChangePrice = (event)=>{
-      const price = parseFloat(event.target.value);
-      if(price !== isNaN && price > 0){
-        const newValue = { ...item, itemBuyingPrice: price }
-        setItem(newValue);
+    const [quantity, setQuantity] = useState(0);
+    const onChangeQuantity = (event)=>{
+      const newQuantity = parseFloat(event.target.value);
+      if(newQuantity !== isNaN && newQuantity >= 0){
+        setQuantity(newQuantity)
       } else if(event.target.value === ''){
-        const newValue = { ...item, itemBuyingPrice: 0 }
-        setItem(newValue);
-      } 
-    }
-    const onChangeStockAlert = (event)=>{
-      const quantity = parseFloat(event.target.value);
-      if(quantity !== isNaN && quantity >= 0){
-        const newValue = { ...item, itemStockAlert: quantity }
-        setItem(newValue);
-      } else if(event.target.value === ''){
-        const newValue = { ...item, itemStockAlert: 0 }
-        setItem(newValue);
+        setQuantity(0);
       } 
     }
     const handleOpen = () => {
@@ -90,14 +69,17 @@ function AddItemModal({ dependency }){
 
     return (
         <>
-          <TriggerButton
+          {/* <TriggerButton
             onClick={handleOpen}
           >
             <Icon fontSize="large" style={{ marginRight: "5px" }}>
               playlist_add
             </Icon>
             Add item
-          </TriggerButton>
+          </TriggerButton> */}
+          <MDButton style={{marginLeft: "5px"}} color="warning" onClick={handleOpen}>
+            <Icon>add</Icon>
+          </MDButton>
           <Modal
             open={open}
             onClose={handleClose}
@@ -117,13 +99,10 @@ function AddItemModal({ dependency }){
                     alignItems: "center",
                   }}
                 >
-                  <TextField id="outlined-basic" value={item?.itemName} label="Item name" variant="outlined" style={{margin: "auto auto"}} fullWidth onChange={onChangeName}/>
-                  <TextField id="outlined-basic" value={item?.itemBuyingPrice} label="Item price" variant="outlined" style={{margin: "auto auto"}} fullWidth onChange={onChangePrice}/>
-                  <TextField id="outlined-basic" value={item?.itemStockAlert} label="Stock alert quantity" variant="outlined" style={{margin: "auto auto"}} fullWidth onChange={onChangeStockAlert}/>
-                  {/* <CustomNumberInput value={item?.itemStockAlert} aria-label="Demo number input" placeholder="Stock alert quantity" onChange={onChangeStockAlert}/> */}
+                  <TextField id="outlined-basic" value={quantity} label="Added quantity" variant="outlined" style={{margin: "auto auto"}} fullWidth onChange={onChangeQuantity}/>
                   <MDButton color="info" onClick={()=>{
-                    if(item?.itemName && item?.itemBuyingPrice >= 0 && item?.itemStockAlert >= 0){
-                      addItem(notification, navigator, item, dependency)
+                    if(quantity >= 0){
+                      addQuantity(notification, navigator, selectedItem._id, quantity, dependency);
                       handleClose();
                     } else {
                       notification.add("All fields are required", { variant: "error" })
@@ -410,4 +389,4 @@ const Backdrop = React.forwardRef((props, ref) => {
   `,
   );
 
-export default AddItemModal;
+export default AddQuantityModal;

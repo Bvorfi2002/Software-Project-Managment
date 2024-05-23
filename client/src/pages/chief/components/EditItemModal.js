@@ -15,7 +15,7 @@ import {
   numberInputClasses,
 } from '@mui/base/Unstable_NumberInput';
 import MDButton from "../../../components/MDButton";
-import { addItem } from "../scripts/inventory-scripts";
+import { editItem } from "../scripts/inventory-scripts";
 
 const CustomNumberInput = React.forwardRef(function CustomNumberInput(value, onChange , ref) {
   return (
@@ -44,15 +44,10 @@ const CustomNumberInput = React.forwardRef(function CustomNumberInput(value, onC
 });
 
 
-function AddItemModal({ dependency }){
+function EditItemModal({ selectedItem, dependency }){
 
     const [open, setOpen] = useState(false);
-    const initialState = {
-      itemName: '',
-      itemBuyingPrice: 0,
-      itemStockAlert: 0
-    }
-    const [item, setItem] = useState({ ...initialState })
+    const [item, setItem] = useState({ ...selectedItem, itemBuyingPrice: selectedItem.itemBuyingPrice.$numberDecimal })
     const onChangeName = (event)=>{
       const newValue = { ...item, itemName: event.target.value };
       setItem(newValue);
@@ -90,14 +85,17 @@ function AddItemModal({ dependency }){
 
     return (
         <>
-          <TriggerButton
+          {/* <TriggerButton
             onClick={handleOpen}
           >
             <Icon fontSize="large" style={{ marginRight: "5px" }}>
               playlist_add
             </Icon>
             Add item
-          </TriggerButton>
+          </TriggerButton> */}
+          <MDButton color="info" style={{marginRight: "5px"}} onClick={handleOpen}>
+            <Icon>edit</Icon>
+          </MDButton>
           <Modal
             open={open}
             onClose={handleClose}
@@ -123,7 +121,7 @@ function AddItemModal({ dependency }){
                   {/* <CustomNumberInput value={item?.itemStockAlert} aria-label="Demo number input" placeholder="Stock alert quantity" onChange={onChangeStockAlert}/> */}
                   <MDButton color="info" onClick={()=>{
                     if(item?.itemName && item?.itemBuyingPrice >= 0 && item?.itemStockAlert >= 0){
-                      addItem(notification, navigator, item, dependency)
+                      editItem(notification, navigator, selectedItem._id, { ...item }, dependency);
                       handleClose();
                     } else {
                       notification.add("All fields are required", { variant: "error" })
@@ -410,4 +408,4 @@ const Backdrop = React.forwardRef((props, ref) => {
   `,
   );
 
-export default AddItemModal;
+export default EditItemModal;

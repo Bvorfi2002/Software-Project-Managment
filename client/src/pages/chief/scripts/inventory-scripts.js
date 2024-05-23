@@ -31,7 +31,7 @@ export const getAllItems = (notification, navigator, proceeding)=>{
         })
 }
 
-export const deleteItem = (notification, navigator, itemId)=>{
+export const deleteItem = (notification, navigator, itemId, dependency)=>{
     fetch(url + "deleteItem", {
         method: "DELETE",
         headers: {
@@ -44,6 +44,7 @@ export const deleteItem = (notification, navigator, itemId)=>{
             if (response.status === 200) {
                 notification.add("Deleted successfully!", { variant: "success" });
                 setTimeout(notification.close, 3000);
+                dependency(true);
             } else if (response.status === 401) {
                 notification.add("Session is over!", { variant: "error" });
                 setTimeout(notification.close, 3000);
@@ -128,7 +129,7 @@ export const addItem = (notification, navigator, item, dependency)=>{
 
 export const addQuantity = (notification, navigator, itemId, quantity, dependency)=>{
     fetch(url + "addQuantity", {
-        method: "POST",
+        method: "PUT",
         headers: {
             "Content-Type": "application/json"
         },
